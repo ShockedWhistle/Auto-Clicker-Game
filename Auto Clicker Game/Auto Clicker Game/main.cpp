@@ -54,9 +54,10 @@ Mat getMat(HWND hwnd) {
 
 void main() {
 
-	LPCWSTR windowTitle = L"Spotify Free";
+	LPCWSTR windowTitle = L"Clicker Heroes";
 
 	HWND hwnd = FindWindow(NULL, windowTitle);
+
 	SetForegroundWindow(hwnd);
 
 	while (!hwnd) {
@@ -65,11 +66,21 @@ void main() {
 		Sleep(100);
 	}
 
-	// Faster to create window
-	namedWindow("output", WINDOW_NORMAL);
+	// Start game
 
-	//PostMessage(hwnd, WM_LBUTTONDOWN, MK_LBUTTON, BuildParam(300, 300));
-	SetCursorPos(500, 500);
+	RECT gameRect;
+	GetWindowRect(hwnd, &gameRect);
+
+	
+	namedWindow("Output", WINDOW_NORMAL);
+	moveWindow("Output", 500, 500);
+
+	int curX = 600;
+	int curY = 300;
+
+	SetCursorPos(curX + gameRect.left, curY + gameRect.top);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 
 	while (true) {
 		Mat img = getMat(hwnd);
