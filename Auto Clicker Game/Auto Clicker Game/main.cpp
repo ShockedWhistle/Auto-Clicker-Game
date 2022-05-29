@@ -7,6 +7,24 @@
 using namespace std;
 using namespace cv;
 
+RECT gameRect;
+// Border : 30px
+
+void clickMonster() {
+	int curX = 580; // 580
+	int curY = 180; // 130
+
+	while (curY != 660) { // Left of abilities
+		SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+		curY += 10;
+		waitKey(150);
+	}
+	
+
+}
+
 Mat getMat(HWND hwnd) {
 	HDC deviceContext = GetDC(hwnd);
 	HDC memoryDeviceContext = CreateCompatibleDC(deviceContext);
@@ -72,19 +90,21 @@ void main() {
 
 	// Start game
 
-	RECT gameRect;
 	GetWindowRect(hwnd, &gameRect);
 
 	
 	namedWindow("Output", WINDOW_NORMAL);
 	moveWindow("Output", 500, 500);
 
-	int curX = 600;
-	int curY = 300;
+	int curX = 0;
+	int curY = 0;
 
+	/*
 	SetCursorPos(curX + gameRect.left, curY + gameRect.top);
 	mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
 	mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+	*/
+	clickMonster();
 
 	while (true) {
 		Mat img = getMat(hwnd);
