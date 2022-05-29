@@ -13,16 +13,86 @@ RECT gameRect;
 void clickMonster() {
 	int curX = 580; // 580
 	int curY = 180; // 130
+	int wait = 80;
+	int pixelStep = 20;
 
+	// Right
 	while (curY != 660) { // Left of abilities
 		SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
-		curY += 10;
-		waitKey(150);
+		curY += pixelStep;
+		waitKey(wait);
 	}
-	
 
+	curX = 660; // 580
+	curY = 180; // 130
+	
+	// Main
+	while (curY < 570) {
+		while (curX < 1050) {
+			SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
+			mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			curX += pixelStep;
+			waitKey(wait);
+		}
+		curY += pixelStep;
+		while (curX > 660) {
+			SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
+			mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			curX -= pixelStep;
+			waitKey(wait);
+		}
+		curY += pixelStep;
+	}
+
+	curX = 1060; // 580
+	curY = 180; // 130
+
+	// Top Left
+	while (curY != 360) {
+		SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+		curY += pixelStep;
+		waitKey(wait);
+	}
+
+	curX = 1060; // 580
+	curY = 420; // 130
+	// Bottom Left
+	while (curY != 600) {
+		SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+		curY += pixelStep;
+		waitKey(wait);
+	}
+
+	curX = 660; // 580
+	curY = 180; // 130
+	
+	// Bottom
+	while (curY < 660) {
+		while (curX < 780) {
+			SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
+			mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			curX += pixelStep;
+			waitKey(wait);
+		}
+		curY += pixelStep;
+		while (curX > 660) {
+			SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
+			mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			curX -= pixelStep;
+			waitKey(wait);
+		}
+		curY += pixelStep;
+	}
 }
 
 Mat getMat(HWND hwnd) {
@@ -105,10 +175,10 @@ void main() {
 	mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 	*/
 	clickMonster();
+	
 
 	while (true) {
 		Mat img = getMat(hwnd);
-
 		imshow("Output", img);
 		waitKey(30);
 	}
