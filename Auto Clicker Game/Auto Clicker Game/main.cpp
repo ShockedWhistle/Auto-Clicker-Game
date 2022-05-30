@@ -16,7 +16,7 @@ void clickMonster() {
 	int wait = 80;
 	int pixelStep = 20;
 
-	// Right
+	// left
 	while (curY != 660) { // Left of abilities
 		SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
@@ -59,7 +59,7 @@ void clickMonster() {
 		curY += pixelStep;
 		waitKey(wait);
 	}
-
+	
 	curX = 1060; // 580
 	curY = 420; // 130
 	// Bottom Left
@@ -70,12 +70,12 @@ void clickMonster() {
 		curY += pixelStep;
 		waitKey(wait);
 	}
-
+	
 	curX = 660; // 580
-	curY = 180; // 130
+	curY = 570; // 130
 	
 	// Bottom
-	while (curY < 660) {
+	while (curY < 640) {
 		while (curX < 780) {
 			SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
 			mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
@@ -85,6 +85,29 @@ void clickMonster() {
 		}
 		curY += pixelStep;
 		while (curX > 660) {
+			SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
+			mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			curX -= pixelStep;
+			waitKey(wait);
+		}
+		curY += pixelStep;
+	}
+
+	curX = 940; // 580
+	curY = 570; // 130
+
+	// Bottom
+	while (curY < 660) {
+		while (curX < 1030) {
+			SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
+			mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
+			curX += pixelStep;
+			waitKey(wait);
+		}
+		curY += pixelStep;
+		while (curX > 940) {
 			SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
 			mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
