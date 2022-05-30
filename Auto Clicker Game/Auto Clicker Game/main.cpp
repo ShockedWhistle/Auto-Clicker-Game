@@ -9,6 +9,13 @@ using namespace cv;
 
 RECT gameRect;
 // Border : 30px
+struct Node{
+	int level;
+	Node* next;
+	Node* prev;
+};
+
+struct Node* hero;
 
 void clickMonster() {
 	int curX = 580; // 580
@@ -118,6 +125,10 @@ void clickMonster() {
 	}
 }
 
+void newHero() {
+	
+}
+
 Mat getMat(HWND hwnd) {
 	HDC deviceContext = GetDC(hwnd);
 	HDC memoryDeviceContext = CreateCompatibleDC(deviceContext);
@@ -168,7 +179,9 @@ static void onMouse(int event, int x, int y, int f, void*) {
 }
 
 void main() {
-
+	hero->level = 0;
+	hero->next = NULL;
+	hero->prev = NULL;
 	LPCWSTR windowTitle = L"Clicker Heroes";
 
 	HWND hwnd = FindWindow(NULL, windowTitle);
