@@ -3,6 +3,9 @@
 #include <opencv2/imgproc.hpp>
 #include <Windows.h>
 #include <iostream>
+#include <thread>
+#include <future>
+#include <stdlib.h>
 
 using namespace std;
 using namespace cv;
@@ -188,21 +191,14 @@ void main() {
 
 	GetWindowRect(hwnd, &gameRect);
 
-	
 	namedWindow("Output", WINDOW_NORMAL);
 	moveWindow("Output", 500, 500);
 
 	int curX = 0;
 	int curY = 0;
 
-	/*
-	SetCursorPos(curX + gameRect.left, curY + gameRect.top);
-	mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top, 0, 0);
-	mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
-	*/
-	clickMonster();
+	//clickMonster();
 	
-
 	while (true) {
 		Mat img = getMat(hwnd);
 		imshow("Output", img);
