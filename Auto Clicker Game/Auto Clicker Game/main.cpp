@@ -121,6 +121,12 @@ void clickMonster() {
 	}
 }
 
+Vec3b monsterDeath(Mat img) {
+	//787, 582
+	Vec3b RGB = img.at<Vec3b>(787, 582);
+	return RGB;
+}
+
 void newHero() {
 	
 }
@@ -178,7 +184,6 @@ void main() {
 	LPCWSTR windowTitle = L"Clicker Heroes";
 
 	HWND hwnd = FindWindow(NULL, windowTitle);
-
 	SetForegroundWindow(hwnd);
 
 	while (!hwnd) {
@@ -187,21 +192,44 @@ void main() {
 		Sleep(100);
 	}
 
+	//namedWindow("output", WINDOW_NORMAL);
 	// Start game
 
-	GetWindowRect(hwnd, &gameRect);
+	//GetWindowRect(hwnd, &gameRect);
 
-	namedWindow("Output", WINDOW_NORMAL);
-	moveWindow("Output", 500, 500);
+	Mat nrgb(50, 50, CV_8UC3, Vec3b(126, 0, 255));
 
-	int curX = 0;
-	int curY = 0;
 
 	//clickMonster();
 	
 	while (true) {
 		Mat img = getMat(hwnd);
-		imshow("Output", img);
+		
+		img.at<Vec3b>(5, 0) = Vec3b(225, 225, 225);
+		
+		//cout << img.rows << ", " << img.cols << endl;
+
+		img.at<Vec3b>(560, 800) = Vec3b(225, 0, 0);
+		Vec3b rgb = img.at<Vec3b>(550, 1060);
+
+		//SetCursorPos(787 + gameRect.left, 552 + gameRect.top);
+
+		int row = img.rows;
+		int cols = img.cols;
+		
+		//RGB = img.at<Vec3b>(787, 552);
+
+		//cout << nrgb << endl;
+		for (int i = 0; i < 50; i++) {
+			for (int r = 0; r < 50; r++) {
+				//Vec3b rgb = img.at<Vec3b>(550+i, 1060+r);
+				nrgb.at<Vec3b>(i, r) = rgb;
+			}
+		}
+
+		imshow("lutput", img);
+		imshow("Output", nrgb);
+		
 		waitKey(30);
 	}
 }
