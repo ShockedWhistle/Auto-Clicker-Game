@@ -195,9 +195,9 @@ void main() {
 	//namedWindow("output", WINDOW_NORMAL);
 	// Start game
 
-	//GetWindowRect(hwnd, &gameRect);
+	GetWindowRect(hwnd, &gameRect);
 
-	Mat nrgb(50, 50, CV_8UC3, Vec3b(126, 0, 255));
+	Mat nrgb(50, 50, CV_8UC4, Vec4b(126, 0, 255));
 
 
 	//clickMonster();
@@ -205,12 +205,9 @@ void main() {
 	while (true) {
 		Mat img = getMat(hwnd);
 		
-		img.at<Vec3b>(5, 0) = Vec3b(225, 225, 225);
-		
 		//cout << img.rows << ", " << img.cols << endl;
 
-		img.at<Vec3b>(560, 800) = Vec3b(225, 0, 0);
-		Vec3b rgb = img.at<Vec3b>(550, 1060);
+		Vec4f rgb = img.at<Vec4b>(550, 787);
 
 		//SetCursorPos(787 + gameRect.left, 552 + gameRect.top);
 
@@ -218,17 +215,18 @@ void main() {
 		int cols = img.cols;
 		
 		//RGB = img.at<Vec3b>(787, 552);
-
+		
 		//cout << nrgb << endl;
 		for (int i = 0; i < 50; i++) {
 			for (int r = 0; r < 50; r++) {
-				//Vec3b rgb = img.at<Vec3b>(550+i, 1060+r);
-				nrgb.at<Vec3b>(i, r) = rgb;
+				rgb = img.at<Vec4b>(550+i, 787 +r);
+				nrgb.at<Vec4b>(i, r) = rgb;
 			}
 		}
-
+		
 		imshow("lutput", img);
 		imshow("Output", nrgb);
+		
 		
 		waitKey(30);
 	}
