@@ -121,10 +121,26 @@ void clickMonster() {
 	}
 }
 
-Vec3b monsterDeath(Mat img) {
+Vec4f monsterDeath(Mat img, Vec4f previous) {
 	//787, 582
-	Vec3b RGB = img.at<Vec3b>(787, 582);
-	return RGB;
+	Vec4f rgba = img.at<Vec4b>(550, 787); // 550, 787  :  60, 60. 61, 255 
+	Vec4f death = { 51, 51, 51, 225 };
+	//cout << rgba << "  :  " << death << endl;
+	if (previous[0] == death[0]) {
+		return rgba;
+	}
+	if (rgba[0] == death[0] && rgba[1] == death[1] && rgba[2] == death[2]) {
+		cout << "Dead" << endl;
+	}
+	/*
+	Mat nrgb(50, 50, CV_8UC4, Vec4b(126, 0, 255));
+	for (int i = 0; i < 50; i++) {
+		for (int r = 0; r < 50; r++) {
+			nrgb.at<Vec4b>(i, r) = rgba;
+		}
+	}
+	*/
+	return rgba;
 }
 
 void newHero() {
@@ -180,7 +196,7 @@ static void onMouse(int event, int x, int y, int f, void*) {
 	//putText(image, "point", Point(x,y), CV_FONT_HERSHEY_PLAIN, 1.0, CV_RGB(255,0,0));
 }
 
-void main() {
+int main() {
 	LPCWSTR windowTitle = L"Clicker Heroes";
 
 	HWND hwnd = FindWindow(NULL, windowTitle);
@@ -197,37 +213,15 @@ void main() {
 
 	GetWindowRect(hwnd, &gameRect);
 
-	Mat nrgb(50, 50, CV_8UC4, Vec4b(126, 0, 255));
-
-
 	//clickMonster();
-	
+	Vec4b previous;
+
 	while (true) {
 		Mat img = getMat(hwnd);
-		
-		//cout << img.rows << ", " << img.cols << endl;
 
-		Vec4f rgb = img.at<Vec4b>(550, 787);
+		previous = monsterDeath(img, previous);
 
-		//SetCursorPos(787 + gameRect.left, 552 + gameRect.top);
-
-		int row = img.rows;
-		int cols = img.cols;
-		
-		//RGB = img.at<Vec3b>(787, 552);
-		
-		//cout << nrgb << endl;
-		for (int i = 0; i < 50; i++) {
-			for (int r = 0; r < 50; r++) {
-				rgb = img.at<Vec4b>(550+i, 787 +r);
-				nrgb.at<Vec4b>(i, r) = rgb;
-			}
-		}
-		
-		imshow("lutput", img);
-		imshow("Output", nrgb);
-		
-		
 		waitKey(30);
 	}
+	return 1;
 }
