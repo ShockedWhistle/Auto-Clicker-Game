@@ -136,6 +136,25 @@ int monsterDeath(Mat img, Vec4f previous) {
 	return 0;
 }
 
+bool bossFight() {
+	while{}
+	return false;
+}
+
+void nextLevel() {
+	SetCursorPos(916 + gameRect.left, 42 + gameRect.top + 30); // Start
+	waitKey(20);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, 916 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, 916 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
+}
+
+void prevLevel() {
+	SetCursorPos(786 + gameRect.left, 42 + gameRect.top + 30); // Start
+	waitKey(20);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, 786 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, 786 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
+}
+
 void checkAbility(Mat img) {
 	int x = 607;
 	int y = 168;
@@ -333,13 +352,28 @@ int main() {
 
 		Vec4f boss = img.at<Vec4b>(174, 824);
 		cout << "Boss : " << boss << endl;
-		if (timer % 100 == 0 || boss[0] == 151 && boss[1] == 118 && boss[2] == 98) {
+		if (timer % 100 == 0) {
 			clickMonster();
 		}
 
 		if (timer % 500 == 0 && timer != 0) {
 			findFish();
 			timer = 0;
+		}
+
+		if (boss[0] == 151 && boss[1] == 118 && boss[2] == 98) {
+			if (bossFight()) {
+				nextLevel();
+			}
+			else {
+				prevLevel();
+				bodyCount = -200;
+			}
+		}
+
+		if (bodyCount >= 20) {
+			nextLevel();
+			bodyCount = 0;
 		}
 
 		timer++;
