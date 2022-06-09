@@ -11,7 +11,9 @@ using namespace std;
 using namespace cv;
 
 RECT gameRect;
-// Border : 30px
+// Border : 30px For Mouse Positions Only
+// Next Level : 916, 42
+// Prev Level : 786, 42
 
 void clickMonster() {
 	int curX = 580; // 580
@@ -121,44 +123,34 @@ void clickMonster() {
 	}
 }
 
-Vec4f monsterDeath(Mat img, Vec4f previous) {
+int monsterDeath(Mat img, Vec4f previous) {
 	//787, 582
 	Vec4f rgba = img.at<Vec4b>(550, 787); // 550, 787  :  60, 60. 61, 255 
-	Vec4f death = { 51, 51, 51, 225 };
+	// Death 51, 51, 51, 255
 	//cout << rgba << "  :  " << death << endl;
-	if (previous[0] == death[0]) {
-		return rgba;
+	if (previous[0] == 51) {
+		return 0;
 	}
-	if (rgba[0] == death[0] && rgba[1] == death[1] && rgba[2] == death[2]) {
-		cout << "Dead" << endl;
+	if (rgba[0] == 51 && rgba[1] == 51 && rgba[2] == 51) {
+		cout << "Another One" << endl;
+		return 1;
 	}
-	/*
-	Mat nrgb(50, 50, CV_8UC4, Vec4b(126, 0, 255));
-	for (int i = 0; i < 50; i++) {
-		for (int r = 0; r < 50; r++) {
-			nrgb.at<Vec4b>(i, r) = rgba;
-		}
-	}
-	*/
-	return rgba;
+	return 0;
 }
 
 void checkAbility(Mat img) {
 	int x = 607;
 	int y = 168;
 	Vec4f rgba = img.at<Vec4b>(y, x);
-	cout << "1 : " << rgba << endl;
 	if (rgba[0] == 219 && rgba[1] == 255 && rgba[2] == 255) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
 	}
-	return;
 
 	y = 220;
 	rgba = img.at<Vec4b>(y, x);
-	cout << "2 : " << rgba << endl;
-	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+	if (rgba[0] == 100 && rgba[1] == 100 && rgba[2] == 255) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
@@ -166,8 +158,7 @@ void checkAbility(Mat img) {
 
 	y = 272;
 	rgba = img.at<Vec4b>(y, x);
-	cout << "3 : " << rgba << endl;
-	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+	if (rgba[0] == 165 && rgba[1] == 172 && rgba[2] == 173) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
@@ -175,8 +166,7 @@ void checkAbility(Mat img) {
 
 	y = 324;
 	rgba = img.at<Vec4b>(y, x);
-	cout << "4 : " << rgba << endl;
-	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+	if (rgba[0] == 219 && rgba[1] == 255 && rgba[2] == 255) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
@@ -184,8 +174,7 @@ void checkAbility(Mat img) {
 
 	y = 375;
 	rgba = img.at<Vec4b>(y, x);
-	cout << "5 : " << rgba << endl;
-	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+	if (rgba[0] == 0 && rgba[1] == 191 && rgba[2] == 255) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
@@ -202,8 +191,7 @@ void checkAbility(Mat img) {
 
 	y = 479;
 	rgba = img.at<Vec4b>(y, x);
-	cout << "7 : " << rgba << endl;
-	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+	if (rgba[0] == 190 && rgba[1] == 180 && rgba[2] == 252) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
@@ -211,8 +199,7 @@ void checkAbility(Mat img) {
 
 	y = 531;
 	rgba = img.at<Vec4b>(y, x);
-	cout << "8 : " << rgba << endl;
-	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+	if (rgba[0] == 229 && rgba[1] == 234 && rgba[2] == 165) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
@@ -220,18 +207,13 @@ void checkAbility(Mat img) {
 
 	y = 583;
 	rgba = img.at<Vec4b>(y, x);
-	cout << "9 : " << rgba << endl;
-	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+	if (rgba[0] == 60 && rgba[1] == 60 && rgba[2] == 242) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
 	}
 
 
-
-}
-
-bool checkNextLevel(Mat img) {
 
 }
 
@@ -297,21 +279,20 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	//clickMonster();
-	Vec4b previous;
-	int i = 0;
+	int bodyCount = 0;
 	while (true) {
 		Mat img = getMat(hwnd);
+
+		checkAbility(img);
+		Vec4f previous = img.at<Vec4b>(550, 787);
+		bodyCount += monsterDeath(img, previous);
+		// clickMonster();
+
+		waitKey(100);
+		// Stop Button
 		if (GetKeyState('B') & 0x8000) {
 			return 0;
 		}
-		//clickMonster();
-
-		checkAbility(img);
-
-		previous = monsterDeath(img, previous);
-
-		waitKey(30);
-		i++;
 	}
-	return 1;
+	return 0;
 }
