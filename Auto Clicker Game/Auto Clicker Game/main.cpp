@@ -137,7 +137,7 @@ int monsterDeath(Mat img, Vec4f previous) {
 }
 
 bool bossFight() {
-	while{}
+	clickMonster();
 	return false;
 }
 
@@ -350,8 +350,6 @@ int main() {
 		Vec4f previous = img.at<Vec4b>(550, 787);
 		bodyCount += monsterDeath(img, previous);
 
-		Vec4f boss = img.at<Vec4b>(174, 824);
-		cout << "Boss : " << boss << endl;
 		if (timer % 100 == 0) {
 			clickMonster();
 		}
@@ -361,6 +359,7 @@ int main() {
 			timer = 0;
 		}
 
+		Vec4f boss = img.at<Vec4b>(174, 824);
 		if (boss[0] == 151 && boss[1] == 118 && boss[2] == 98) {
 			if (bossFight()) {
 				nextLevel();
