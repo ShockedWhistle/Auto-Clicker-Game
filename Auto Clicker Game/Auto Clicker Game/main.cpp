@@ -3,8 +3,6 @@
 #include <opencv2/imgproc.hpp>
 #include <Windows.h>
 #include <iostream>
-#include <thread>
-#include <future>
 #include <stdlib.h>
 
 using namespace std;
@@ -217,6 +215,54 @@ void checkAbility(Mat img) {
 
 }
 
+void findFish() {
+	int x = 112;
+	int y = 100;
+	int pixelStep = 20;
+	int wait = 40;
+
+	SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+	waitKey(5);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+
+	// Menue
+	y = 130;
+	while (y < 640) { 
+		x = 10;
+		while (x < 562) {
+			SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+			mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+			x += pixelStep;
+			waitKey(wait);
+		}
+		y += pixelStep;
+	}
+
+	// Money
+	y = 0;
+	while (y < 80) {
+		x = 10;
+		while (x < 640) {
+			SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+			mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+			x += pixelStep;
+			waitKey(wait);
+		}
+		y += pixelStep;
+	}
+
+	x = 44;
+	y = 100;
+
+	SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+	waitKey(5);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+}
+
 Mat getMat(HWND hwnd) {
 	HDC deviceContext = GetDC(hwnd);
 	HDC memoryDeviceContext = CreateCompatibleDC(deviceContext);
@@ -273,22 +319,32 @@ int main() {
 		Sleep(100);
 	}
 
-	//namedWindow("output", WINDOW_NORMAL);
-	// Start game
-
 	GetWindowRect(hwnd, &gameRect);
 
-	//clickMonster();
 	int bodyCount = 0;
+	int timer = 0;
 	while (true) {
 		Mat img = getMat(hwnd);
 
 		checkAbility(img);
+
 		Vec4f previous = img.at<Vec4b>(550, 787);
 		bodyCount += monsterDeath(img, previous);
-		// clickMonster();
 
+		Vec4f boss = img.at<Vec4b>(174, 824);
+		cout << "Boss : " << boss << endl;
+		if (timer % 100 == 0 || boss[0] == 151 && boss[1] == 118 && boss[2] == 98) {
+			clickMonster();
+		}
+
+		if (timer % 500 == 0 && timer != 0) {
+			findFish();
+			timer = 0;
+		}
+
+		timer++;
 		waitKey(100);
+
 		// Stop Button
 		if (GetKeyState('B') & 0x8000) {
 			return 0;
