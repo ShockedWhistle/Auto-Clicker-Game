@@ -143,8 +143,96 @@ Vec4f monsterDeath(Mat img, Vec4f previous) {
 	return rgba;
 }
 
-void newHero() {
-	
+void checkAbility(Mat img) {
+	int x = 607;
+	int y = 168;
+	Vec4f rgba = img.at<Vec4b>(y, x);
+	cout << "1 : " << rgba << endl;
+	if (rgba[0] == 219 && rgba[1] == 255 && rgba[2] == 255) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
+	}
+	return;
+
+	y = 220;
+	rgba = img.at<Vec4b>(y, x);
+	cout << "2 : " << rgba << endl;
+	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
+	}
+
+	y = 272;
+	rgba = img.at<Vec4b>(y, x);
+	cout << "3 : " << rgba << endl;
+	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
+	}
+
+	y = 324;
+	rgba = img.at<Vec4b>(y, x);
+	cout << "4 : " << rgba << endl;
+	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
+	}
+
+	y = 375;
+	rgba = img.at<Vec4b>(y, x);
+	cout << "5 : " << rgba << endl;
+	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
+	}
+
+	y = 426;
+	rgba = img.at<Vec4b>(y, x);
+	cout << "6 : " << rgba << endl;
+	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
+	}
+
+	y = 479;
+	rgba = img.at<Vec4b>(y, x);
+	cout << "7 : " << rgba << endl;
+	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
+	}
+
+	y = 531;
+	rgba = img.at<Vec4b>(y, x);
+	cout << "8 : " << rgba << endl;
+	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
+	}
+
+	y = 583;
+	rgba = img.at<Vec4b>(y, x);
+	cout << "9 : " << rgba << endl;
+	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
+	}
+
+
+
+}
+
+bool checkNextLevel(Mat img) {
+
 }
 
 Mat getMat(HWND hwnd) {
@@ -191,11 +279,6 @@ Mat getMat(HWND hwnd) {
 	return mat;
 }
 
-static void onMouse(int event, int x, int y, int f, void*) {
-	cout << x << " " << y << endl;
-	//putText(image, "point", Point(x,y), CV_FONT_HERSHEY_PLAIN, 1.0, CV_RGB(255,0,0));
-}
-
 int main() {
 	LPCWSTR windowTitle = L"Clicker Heroes";
 
@@ -215,13 +298,20 @@ int main() {
 
 	//clickMonster();
 	Vec4b previous;
-
+	int i = 0;
 	while (true) {
 		Mat img = getMat(hwnd);
+		if (GetKeyState('B') & 0x8000) {
+			return 0;
+		}
+		//clickMonster();
+
+		checkAbility(img);
 
 		previous = monsterDeath(img, previous);
 
 		waitKey(30);
+		i++;
 	}
 	return 1;
 }
