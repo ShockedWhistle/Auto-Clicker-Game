@@ -13,6 +13,64 @@ RECT gameRect;
 // Next Level : 916, 42
 // Prev Level : 786, 42
 
+Mat getMat(HWND hwnd) {
+	HDC deviceContext = GetDC(hwnd);
+	HDC memoryDeviceContext = CreateCompatibleDC(deviceContext);
+
+	RECT windowRect;
+	GetClientRect(hwnd, &windowRect);
+
+	int height = windowRect.bottom;
+	int width = windowRect.right;
+
+	HBITMAP bitmap = CreateCompatibleBitmap(deviceContext, width, height);
+
+	SelectObject(memoryDeviceContext, bitmap);
+
+	// Copy data into bitmap
+	BitBlt(memoryDeviceContext, 0, 0, width, height, deviceContext, 0, 0, SRCCOPY);
+
+	// Spesify format by using bitmapinfoheader
+	BITMAPINFOHEADER bi;
+	bi.biSize = sizeof(BITMAPINFOHEADER);
+	bi.biWidth = width;
+	bi.biHeight = -height;
+	bi.biPlanes = 1;
+	bi.biBitCount = 32;
+	bi.biCompression = BI_RGB;
+	bi.biSizeImage = 0; // No compression
+	bi.biXPelsPerMeter = 1;
+	bi.biYPelsPerMeter = 2;
+	bi.biClrUsed = 3;
+	bi.biClrImportant = 4;
+
+	Mat mat = Mat(height, width, CV_8UC4); // 8 bit unsigned ints 4 channels -> RGBA
+
+	// Transform data and store into mat.data
+	GetDIBits(memoryDeviceContext, bitmap, 0, height, mat.data, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
+
+	// Clean up
+	DeleteObject(bitmap);
+	DeleteDC(memoryDeviceContext);
+	ReleaseDC(hwnd, deviceContext);
+
+	return mat;
+}
+
+void nextLevel() {
+	SetCursorPos(916 + gameRect.left, 42 + gameRect.top + 30); // Start
+	waitKey(20);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, 916 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, 916 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
+}
+
+void prevLevel() {
+	SetCursorPos(786 + gameRect.left, 42 + gameRect.top + 30); // Start
+	waitKey(20);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, 786 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, 786 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
+}
+
 void clickMonster() {
 	int curX = 580; // 580
 	int curY = 180; // 130
@@ -136,23 +194,89 @@ int monsterDeath(Mat img, Vec4f previous) {
 	return 0;
 }
 
+int upgradeHero(Mat img, int y) {
+	int x = 90;
+	y += 60;
+	Vec4f level = img.at<Vec4b>(y, x);
+	int wait = 80;
+	int upgrade = 0;
+
+	cout << "Level : " << x << ", " << y << " : " << level << endl;
+	/*
+	while (level[0] == 255 && level[1] == 184 && level[2] == 81) {
+		upgrade++;
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+		waitKey(wait);
+		level = img.at<Vec4b>(y, x);
+	}
+	*/
+	return upgrade;
+}
+
+int findHero(HWND hwnd, Mat img, int hero) {
+	// 100 px Tall per hero 8 px apart
+	// Up : 548, 188 Down : 548, 626
+
+	int x = 548;
+	int y = 188;
+	int wait = 80;
+
+	for (int i = 0; i < 100; i++) {
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+		waitKey(wait);
+	}
+
+	x = 90;
+	y = 172;
+	int heroY = hero * 108;
+	heroY += 172;
+
+	if (hero <= 4) {
+		return upgradeHero(img, heroY + 3);
+	}
+
+	Mat scrool = img;
+	for (int i = 5; i < hero; i++) {
+		SetCursorPos(548 + gameRect.left, 626 + gameRect.top + 30); // Start
+		mouse_event(MOUSEEVENTF_LEFTDOWN, 548 + gameRect.left, 626 + gameRect.top + 30, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, 548 + gameRect.left, 626 + gameRect.top + 30, 0, 0);
+		waitKey(wait);
+		scrool = getMat(hwnd);
+
+		Vec4f diffrencePx = scrool.at<Vec4b>(y, x);
+		Vec4f oldPx = img.at<Vec4b>(y, x);
+		bool loading = true;
+		int diffrence = 0;
+		while (loading) {
+			int cerntinty = 0;
+			if (img.at<Vec4b>(y + diffrence, x) == scrool.at<Vec4b>(y, x)) {
+				for (int i = 0; i < 150; i++) {
+					if (img.at<Vec4b>(y + diffrence, x + i) == scrool.at<Vec4b>(y, x + i)) {
+						cerntinty++;
+					}
+				}
+			}
+			else {
+				diffrence++;
+			}
+			
+			if (cerntinty == 150) {
+				loading = false;
+			}
+		}
+
+
+	}
+
+}
+
 bool bossFight() {
 	clickMonster();
 	return false;
-}
-
-void nextLevel() {
-	SetCursorPos(916 + gameRect.left, 42 + gameRect.top + 30); // Start
-	waitKey(20);
-	mouse_event(MOUSEEVENTF_LEFTDOWN, 916 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
-	mouse_event(MOUSEEVENTF_LEFTUP, 916 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
-}
-
-void prevLevel() {
-	SetCursorPos(786 + gameRect.left, 42 + gameRect.top + 30); // Start
-	waitKey(20);
-	mouse_event(MOUSEEVENTF_LEFTDOWN, 786 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
-	mouse_event(MOUSEEVENTF_LEFTUP, 786 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
 }
 
 void checkAbility(Mat img) {
@@ -282,50 +406,6 @@ void findFish() {
 	mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 }
 
-Mat getMat(HWND hwnd) {
-	HDC deviceContext = GetDC(hwnd);
-	HDC memoryDeviceContext = CreateCompatibleDC(deviceContext);
-
-	RECT windowRect;
-	GetClientRect(hwnd, &windowRect);
-
-	int height = windowRect.bottom;
-	int width = windowRect.right;
-
-	HBITMAP bitmap = CreateCompatibleBitmap(deviceContext, width, height);
-
-	SelectObject(memoryDeviceContext, bitmap);
-
-	// Copy data into bitmap
-	BitBlt(memoryDeviceContext, 0, 0, width, height, deviceContext, 0, 0, SRCCOPY);
-
-	// Spesify format by using bitmapinfoheader
-	BITMAPINFOHEADER bi;
-	bi.biSize = sizeof(BITMAPINFOHEADER);
-	bi.biWidth = width;
-	bi.biHeight = -height;
-	bi.biPlanes = 1;
-	bi.biBitCount = 32;
-	bi.biCompression = BI_RGB;
-	bi.biSizeImage = 0; // No compression
-	bi.biXPelsPerMeter = 1;
-	bi.biYPelsPerMeter = 2;
-	bi.biClrUsed = 3;
-	bi.biClrImportant = 4;
-
-	Mat mat = Mat(height, width, CV_8UC4); // 8 bit unsigned ints 4 channels -> RGBA
-
-	// Transform data and store into mat.data
-	GetDIBits(memoryDeviceContext, bitmap, 0, height, mat.data, (BITMAPINFO*)&bi, DIB_RGB_COLORS);
-
-	// Clean up
-	DeleteObject(bitmap);
-	DeleteDC(memoryDeviceContext);
-	ReleaseDC(hwnd, deviceContext);
-
-	return mat;
-}
-
 int main() {
 	LPCWSTR windowTitle = L"Clicker Heroes";
 
@@ -341,39 +421,42 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
+	int heroUpgrade = 0;
 	int timer = 0;
 	while (true) {
 		Mat img = getMat(hwnd);
 
-		checkAbility(img);
+		//checkAbility(img);
 
 		Vec4f previous = img.at<Vec4b>(550, 787);
-		bodyCount += monsterDeath(img, previous);
+		//bodyCount += monsterDeath(img, previous);
+
+		findHero(hwnd, img, heroUpgrade);
 
 		if (timer % 100 == 0) {
-			clickMonster();
+			//clickMonster();
 		}
 
 		if (timer % 500 == 0 && timer != 0) {
-			findFish();
+			//findFish();
 			timer = 0;
 		}
 
 		Vec4f boss = img.at<Vec4b>(174, 824);
 		if (boss[0] == 151 && boss[1] == 118 && boss[2] == 98) {
-			if (bossFight()) {
-				nextLevel();
-			}
-			else {
-				prevLevel();
-				bodyCount = -200;
-			}
+			//if (bossFight()) {
+				//nextLevel();
+			//}
+			//else {
+				//prevLevel();
+				//bodyCount = -200;
+			//}
 		}
 
-		if (bodyCount >= 20) {
-			nextLevel();
-			bodyCount = 0;
-		}
+		//if (bodyCount >= 20) {
+			//nextLevel();
+			//bodyCount = 0;
+		//}
 
 		timer++;
 		waitKey(100);
