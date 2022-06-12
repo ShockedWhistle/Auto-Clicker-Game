@@ -224,7 +224,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	int wait = 80;
 
 	for (int i = 0; i < 50; i++) {
-		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		waitKey(wait);
@@ -246,8 +246,11 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	std::cout << "Start Finding" << std::endl;
 
 	Mat scrool = getMat(hwnd);
+
 	// 232 to 592 is good for y position
 	while (heroY > 592 || heroY < 232) {
+		img = getMat(hwnd);
+		waitKey(wait);
 		SetCursorPos(548 + gameRect.left, 626 + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, 548 + gameRect.left, 626 + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, 548 + gameRect.left, 626 + gameRect.top + 30, 0, 0);
@@ -263,12 +266,15 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 		int cerntinty = 0;
 		while (cerntinty < persision) {
-			std::cout << "Diffrence : " << diffrence << std::endl;
+			if (diffrence > 400) {
+				return 0;
+			}
+			std::cout << "Diffrence : " << diffrence << std::endl << std::endl;
 
 			diffrencePx = scrool.at<Vec4b>(y, x);
 			oldPx = img.at<Vec4b>(y + diffrence, x);
 
-			if (diffrencePx[0] == oldPx[0] && diffrencePx[1] == oldPx[1] && diffrencePx[2] == oldPx[2]) {
+			if (diffrencePx == oldPx) {
 				std::cout << "Same" << std::endl;
 				cerntinty++;
 				for (int i = 1; i < persision; i++) {
@@ -276,6 +282,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					oldPx = img.at<Vec4b>(y + diffrence, x + i);
 					if (diffrencePx[0] == oldPx[0] && diffrencePx[1] == oldPx[1] && diffrencePx[2] == oldPx[2]) {
 						cerntinty++;
+						std::cout << "Certinty : " << cerntinty << std::endl;
 					}
 					else {
 						std::cout << "Fail" << std::endl;
@@ -295,7 +302,9 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		std::cout << "Hero Y : " << heroY << std::endl;
 		diffrence = 0;
 	}
-
+	
+	std::cout << "Done" << std::endl << std::endl;
+	upgradeHero(scrool, heroY);
 }
 
 bool bossFight() {
@@ -445,8 +454,12 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 5;
+	int heroUpgrade = 4;
 	int timer = 0;
+	Mat temp = getMat(hwnd);
+
+	findHero(hwnd, temp, heroUpgrade);
+
 	while (true) {
 		Mat img = getMat(hwnd);
 
@@ -455,7 +468,7 @@ int main() {
 		Vec4f previous = img.at<Vec4b>(550, 787);
 		//bodyCount += monsterDeath(img, previous);
 
-		findHero(hwnd, img, heroUpgrade);
+		//findHero(hwnd, img, heroUpgrade);
 
 		if (timer % 100 == 0) {
 			//clickMonster();
