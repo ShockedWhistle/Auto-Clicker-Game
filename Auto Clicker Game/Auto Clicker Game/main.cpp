@@ -194,7 +194,8 @@ int monsterDeath(Mat img, Vec4f previous) {
 
 int upgradeHero(Mat img, int y) {
 	int x = 90;
-	y += 60;
+	//y += 60;
+	std::cout << y << std::endl;
 	Vec4f level = img.at<Vec4b>(y, x);
 	int wait = 80;
 	int upgrade = 0;
@@ -248,7 +249,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	Mat scrool = getMat(hwnd);
 
 	// 232 to 592 is good for y position
-	while (heroY > 560 || heroY < 232) {
+	while (heroY > 532 || heroY < 232) {
 		img = getMat(hwnd);
 		waitKey(wait);
 		SetCursorPos(548 + gameRect.left, 626 + gameRect.top + 30); // Start
@@ -261,6 +262,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		int scrooled = 0;
 		int certinty = 0;
 		while (certinty < persision) {
+			std::cout << "Scrooled : " << scrooled << std::endl;
 			Vec4f newPx = scrool.at<Vec4b>(y, x);
 			Vec4f oldPx = img.at<Vec4b>(y + scrooled, x);
 			if (newPx == oldPx) {
