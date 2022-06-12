@@ -194,13 +194,13 @@ int monsterDeath(Mat img, Vec4f previous) {
 
 int upgradeHero(Mat img, int y) {
 	int x = 90;
-	//y += 60;
+	y += 60;
 	std::cout << y << std::endl;
-	Vec4f level = img.at<Vec4b>(y, x);
+	//Vec4f level = img.at<Vec4b>(y, x);
 	int wait = 80;
 	int upgrade = 0;
 
-	std::cout << "Level : " << x << ", " << y << " : " << level << std::endl;
+	std::cout << "Level : " << x << ", " << y << std::endl;
 
 	SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 	/*
@@ -273,6 +273,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 					if (newPx == oldPx) {
 						certinty++;
+						std::cout << certinty << "%" << std::endl;
 					}
 				}
 			}
@@ -435,7 +436,7 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 4;
+	int heroUpgrade = 5;
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
