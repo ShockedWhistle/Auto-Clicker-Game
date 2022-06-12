@@ -239,7 +239,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 	std::cout << "Hero Y : " << heroY << std::endl;
 
-	if (hero <= 4) {
+	if (hero <= 3) {
 		return upgradeHero(img, heroY + 3);
 	}
 
@@ -248,7 +248,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	Mat scrool = getMat(hwnd);
 
 	// 232 to 592 is good for y position
-	while (heroY > 592 || heroY < 232) {
+	while (heroY > 560 || heroY < 232) {
 		img = getMat(hwnd);
 		waitKey(wait);
 		SetCursorPos(548 + gameRect.left, 626 + gameRect.top + 30); // Start
@@ -257,50 +257,29 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		waitKey(wait);
 		scrool = getMat(hwnd);
 
-		Vec4f diffrencePx = scrool.at<Vec4b>(y, x);
-		Vec4f oldPx = img.at<Vec4b>(y, x);
-		int diffrence = 0;
-		int persision = 10;
-
-		std::cout << "Diff " << diffrence << std::endl;
-
-		int cerntinty = 0;
-		while (cerntinty < persision) {
-			if (diffrence > 400) {
-				return 0;
-			}
-			std::cout << "Diffrence : " << diffrence << std::endl << std::endl;
-
-			diffrencePx = scrool.at<Vec4b>(y, x);
-			oldPx = img.at<Vec4b>(y + diffrence, x);
-
-			if (diffrencePx == oldPx) {
-				std::cout << "Same" << std::endl;
-				cerntinty++;
+		int persision = 150;
+		int scrooled = 0;
+		int certinty = 0;
+		while (certinty < persision) {
+			Vec4f newPx = scrool.at<Vec4b>(y, x);
+			Vec4f oldPx = img.at<Vec4b>(y + scrooled, x);
+			if (newPx == oldPx) {
+				certinty++;
 				for (int i = 1; i < persision; i++) {
-					diffrencePx = scrool.at<Vec4b>(y, x + i);
-					oldPx = img.at<Vec4b>(y + diffrence, x + i);
-					if (diffrencePx[0] == oldPx[0] && diffrencePx[1] == oldPx[1] && diffrencePx[2] == oldPx[2]) {
-						cerntinty++;
-						std::cout << "Certinty : " << cerntinty << std::endl;
-					}
-					else {
-						std::cout << "Fail" << std::endl;
-						diffrence++;
-						i = persision;
+					newPx = scrool.at<Vec4b>(y, x + i);
+					oldPx = img.at<Vec4b>(y + scrooled, x + i);
+
+					if (newPx == oldPx) {
+						certinty++;
 					}
 				}
 			}
-			else {
-				std::cout << diffrencePx << " : " << oldPx << std::endl;
-				diffrence++;
+			if (certinty < persision) {
+				scrooled++;
 			}
 		}
-
-		std::cout << "Exit" << std::endl;
-		heroY -= diffrence;
-		std::cout << "Hero Y : " << heroY << std::endl;
-		diffrence = 0;
+		heroY -= scrooled;
+		std::cout << "Hero Y" << heroY << std::endl;
 	}
 	
 	std::cout << "Done" << std::endl << std::endl;
