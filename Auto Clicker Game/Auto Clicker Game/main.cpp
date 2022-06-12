@@ -1,11 +1,9 @@
+#include <iostream>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
 #include <Windows.h>
-#include <iostream>
-#include <stdlib.h>
 
-using namespace std;
 using namespace cv;
 
 RECT gameRect;
@@ -188,7 +186,7 @@ int monsterDeath(Mat img, Vec4f previous) {
 		return 0;
 	}
 	if (rgba[0] == 51 && rgba[1] == 51 && rgba[2] == 51) {
-		cout << "Another One" << endl;
+		std::cout << "Another One" << std::endl;
 		return 1;
 	}
 	return 0;
@@ -201,11 +199,13 @@ int upgradeHero(Mat img, int y) {
 	int wait = 80;
 	int upgrade = 0;
 
-	cout << "Level : " << x << ", " << y << " : " << level << endl;
+	std::cout << "Level : " << x << ", " << y << " : " << level << std::endl;
+
+	SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 	/*
 	while (level[0] == 255 && level[1] == 184 && level[2] == 81) {
 		upgrade++;
-		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		waitKey(wait);
@@ -223,24 +223,31 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	int y = 188;
 	int wait = 80;
 
-	for (int i = 0; i < 100; i++) {
+	for (int i = 0; i < 50; i++) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		waitKey(wait);
 	}
 
+	img = getMat(hwnd);
+
 	x = 90;
 	y = 172;
 	int heroY = hero * 108;
-	heroY += 172;
+	heroY += y;
+
+	std::cout << "Hero Y : " << heroY << std::endl;
 
 	if (hero <= 4) {
 		return upgradeHero(img, heroY + 3);
 	}
 
-	Mat scrool = img;
-	for (int i = 5; i < hero; i++) {
+	std::cout << "Start Finding" << std::endl;
+
+	Mat scrool = getMat(hwnd);
+	// 232 to 592 is good for y position
+	while (heroY > 592 || heroY < 232) {
 		SetCursorPos(548 + gameRect.left, 626 + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, 548 + gameRect.left, 626 + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, 548 + gameRect.left, 626 + gameRect.top + 30, 0, 0);
@@ -249,27 +256,44 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 		Vec4f diffrencePx = scrool.at<Vec4b>(y, x);
 		Vec4f oldPx = img.at<Vec4b>(y, x);
-		bool loading = true;
 		int diffrence = 0;
-		while (loading) {
-			int cerntinty = 0;
-			if (img.at<Vec4b>(y + diffrence, x) == scrool.at<Vec4b>(y, x)) {
-				for (int i = 0; i < 150; i++) {
-					if (img.at<Vec4b>(y + diffrence, x + i) == scrool.at<Vec4b>(y, x + i)) {
+		int persision = 10;
+
+		std::cout << "Diff " << diffrence << std::endl;
+
+		int cerntinty = 0;
+		while (cerntinty < persision) {
+			std::cout << "Diffrence : " << diffrence << std::endl;
+
+			diffrencePx = scrool.at<Vec4b>(y, x);
+			oldPx = img.at<Vec4b>(y + diffrence, x);
+
+			if (diffrencePx[0] == oldPx[0] && diffrencePx[1] == oldPx[1] && diffrencePx[2] == oldPx[2]) {
+				std::cout << "Same" << std::endl;
+				cerntinty++;
+				for (int i = 1; i < persision; i++) {
+					diffrencePx = scrool.at<Vec4b>(y, x + i);
+					oldPx = img.at<Vec4b>(y + diffrence, x + i);
+					if (diffrencePx[0] == oldPx[0] && diffrencePx[1] == oldPx[1] && diffrencePx[2] == oldPx[2]) {
 						cerntinty++;
+					}
+					else {
+						std::cout << "Fail" << std::endl;
+						diffrence++;
+						i = persision;
 					}
 				}
 			}
 			else {
+				std::cout << diffrencePx << " : " << oldPx << std::endl;
 				diffrence++;
-			}
-			
-			if (cerntinty == 150) {
-				loading = false;
 			}
 		}
 
-
+		std::cout << "Exit" << std::endl;
+		heroY -= diffrence;
+		std::cout << "Hero Y : " << heroY << std::endl;
+		diffrence = 0;
 	}
 
 }
@@ -323,7 +347,7 @@ void checkAbility(Mat img) {
 
 	y = 426;
 	rgba = img.at<Vec4b>(y, x);
-	cout << "6 : " << rgba << endl;
+	std::cout << "6 : " << rgba << std::endl;
 	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
@@ -414,14 +438,14 @@ int main() {
 
 	while (!hwnd) {
 		system("cls");
-		cout << "Start" << endl;
+		std::cout << "Start" << std::endl;
 		Sleep(100);
 	}
 
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 0;
+	int heroUpgrade = 5;
 	int timer = 0;
 	while (true) {
 		Mat img = getMat(hwnd);
