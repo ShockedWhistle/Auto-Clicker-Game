@@ -286,7 +286,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	}
 	
 	std::cout << "Done" << std::endl << std::endl;
-	upgradeHero(scrool, heroY);
+	return upgradeHero(scrool, heroY);
 }
 
 bool bossFight() {
@@ -440,24 +440,24 @@ int main() {
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
-	findHero(hwnd, temp, heroUpgrade);
+	//findHero(hwnd, temp, heroUpgrade);
 
 	while (true) {
 		Mat img = getMat(hwnd);
 
-		//checkAbility(img);
+		checkAbility(img);
 
 		Vec4f previous = img.at<Vec4b>(550, 787);
-		//bodyCount += monsterDeath(img, previous);
+		bodyCount += monsterDeath(img, previous);
 
 		//findHero(hwnd, img, heroUpgrade);
 
 		if (timer % 100 == 0) {
-			//clickMonster();
+			clickMonster();
 		}
 
-		if (timer % 500 == 0 && timer != 0) {
-			//findFish();
+		if (timer % 1000 == 0 && timer != 0) {
+			findFish();
 			timer = 0;
 		}
 
