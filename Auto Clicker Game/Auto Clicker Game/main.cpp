@@ -338,8 +338,7 @@ void checkAbility(Mat img) {
 
 	y = 426;
 	rgba = img.at<Vec4b>(y, x);
-	std::cout << "6 : " << rgba << std::endl;
-	if (rgba[0] == 90 && rgba[1] == 226 && rgba[2] == 255) {
+	if (rgba[0] == 0 && rgba[1] == 0 && rgba[2] == 0) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
