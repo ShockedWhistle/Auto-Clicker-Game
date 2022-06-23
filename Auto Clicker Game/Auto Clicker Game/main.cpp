@@ -217,76 +217,32 @@ int upgradeHero(Mat img, int y) {
 }
 
 int findHero(HWND hwnd, Mat img, int hero) {
-	// 100 px Tall per hero 8 px apart
-	// Up : 548, 188 Down : 548, 626
+		// 152 x 220 down 32
+// Up : 548, 188 Down : 548, 626
 
-	int x = 548;
+	int x = 152;
 	int y = 188;
 	int wait = 80;
 
-	for (int i = 0; i < 50; i++) {
+	Vec4f A[32], U[32], GA[32], GU[32];
+
+	for (int i = 0; i < 32; i++) {
+		GU[i] = img.at<Vec4b>(434 + i, 152);
+		std::cout << GU[i] << std::endl;
+	}
+
+	//Scrools up all the way
+	/*
+	for (int i = 0; i < 100; i++) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		waitKey(wait);
 	}
+	*/
 
-	img = getMat(hwnd);
 
-	x = 90;
-	y = 172;
-	int heroY = hero * 108;
-	heroY += y;
-
-	std::cout << "Hero Y : " << heroY << std::endl;
-
-	if (hero <= 3) {
-		return upgradeHero(img, heroY + 3);
-	}
-
-	std::cout << "Start Finding" << std::endl;
-
-	Mat scrool = getMat(hwnd);
-
-	// 232 to 592 is good for y position
-	while (heroY > 532 || heroY < 232) {
-		img = getMat(hwnd);
-		waitKey(wait);
-		SetCursorPos(548 + gameRect.left, 626 + gameRect.top + 30); // Start
-		mouse_event(MOUSEEVENTF_LEFTDOWN, 548 + gameRect.left, 626 + gameRect.top + 30, 0, 0);
-		mouse_event(MOUSEEVENTF_LEFTUP, 548 + gameRect.left, 626 + gameRect.top + 30, 0, 0);
-		waitKey(wait);
-		scrool = getMat(hwnd);
-
-		int persision = 150;
-		int scrooled = 0;
-		int certinty = 0;
-		while (certinty < persision) {
-			std::cout << "Scrooled : " << scrooled << std::endl;
-			Vec4f newPx = scrool.at<Vec4b>(y, x);
-			Vec4f oldPx = img.at<Vec4b>(y + scrooled, x);
-			if (newPx == oldPx) {
-				certinty++;
-				for (int i = 1; i < persision; i++) {
-					newPx = scrool.at<Vec4b>(y, x + i);
-					oldPx = img.at<Vec4b>(y + scrooled, x + i);
-
-					if (newPx == oldPx) {
-						certinty++;
-						std::cout << certinty << "%" << std::endl;
-					}
-				}
-			}
-			if (certinty < persision) {
-				scrooled++;
-			}
-		}
-		heroY -= scrooled;
-		std::cout << "Hero Y" << heroY << std::endl;
-	}
-	
-	std::cout << "Done" << std::endl << std::endl;
-	return upgradeHero(scrool, heroY);
+	return upgradeHero(img, -1);
 }
 
 bool bossFight() {
@@ -354,7 +310,7 @@ void checkAbility(Mat img) {
 
 	y = 531;
 	rgba = img.at<Vec4b>(y, x);
-	if (rgba[0] == 229 && rgba[1] == 234 && rgba[2] == 165) {
+	if (rgba[0] == 0 && rgba[1] == 0 && rgba[2] == 0) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
@@ -439,7 +395,8 @@ int main() {
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
-	//findHero(hwnd, temp, heroUpgrade);
+	findHero(hwnd, temp, heroUpgrade);
+	return 1;
 
 	while (true) {
 		Mat img = getMat(hwnd);
