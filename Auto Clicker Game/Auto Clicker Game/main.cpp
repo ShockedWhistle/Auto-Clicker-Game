@@ -217,30 +217,65 @@ int upgradeHero(Mat img, int y) {
 }
 
 int findHero(HWND hwnd, Mat img, int hero) {
-		// 152 x 220 down 32
+	// X : 155 down 48
 // Up : 548, 188 Down : 548, 626
 
-	int x = 152;
+	int x = 548;
 	int y = 188;
 	int wait = 80;
 
-	Vec4f A[32], U[32], GA[32], GU[32];
-
-	for (int i = 0; i < 32; i++) {
-		GU[i] = img.at<Vec4b>(434 + i, 152);
-		std::cout << GU[i] << std::endl;
-	}
-
 	//Scrools up all the way
-	/*
+	
 	for (int i = 0; i < 100; i++) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		waitKey(wait);
 	}
-	*/
+	
+	// Sets pixel color values
+	Vec4f u[5], a[5], gu[5], ga[5];
 
+	u[0] = 109, 154, 163, 255;
+	u[1] = 56, 87, 93, 255;
+	u[2] = 50, 78, 84, 255;
+	u[3] = 24, 44, 49, 255;
+	u[4] = 29, 50, 56, 255;
+
+	a[0] = 110, 162, 172, 255;
+	a[1] = 58, 101, 110, 255;
+	a[2] = 69, 113, 124, 255;
+	a[3] = 49, 89, 100, 255;
+	a[4] = 60, 102, 113, 255;
+
+	gu[0] = 53, 145, 169, 255;
+	gu[1] = 28, 82, 96, 255;
+	gu[2] = 34, 76, 86, 255;
+	gu[3] = 24, 44, 49, 255;
+	gu[4] = 29, 50, 56, 255;
+
+	ga[0] = 54, 153, 178, 255;
+	ga[1] = 30, 96, 113, 255;
+	ga[2] = 53, 111, 126, 255;
+	ga[3] = 49, 89, 100, 255;
+	ga[4] = 60, 102, 113, 255;
+
+	x = 155; 
+	y = 172;
+
+	Vec4f current;
+
+	Vec4b box1, box2, box3, box4;
+
+	while (y <= 592) {
+
+		current = img.at<Vec4b>(y, x);
+
+		if (current == u[0] || current == a[0] || current == gu[0] || current == ga[0]) {
+			for(int i = 1; i < 48)
+		}
+		y++;
+	}
 
 	return upgradeHero(img, -1);
 }
