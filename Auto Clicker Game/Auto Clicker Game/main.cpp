@@ -193,6 +193,9 @@ int monsterDeath(Mat img, Vec4f previous) {
 }
 
 int upgradeHero(Mat img, int y) {
+
+	return 0;
+
 	int x = 90;
 	y += 60;
 	std::cout << y << std::endl;
@@ -265,17 +268,148 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 	Vec4f current;
 
-	Vec4b box1, box2, box3, box4;
+	Vec4b boxs[4];
 
-	while (y <= 592) {
+	int ids[4];
+
+	int index = 0;
+
+	while (y <= 592 && index < 4) {
 
 		current = img.at<Vec4b>(y, x);
 
-		if (current == u[0] || current == a[0] || current == gu[0] || current == ga[0]) {
-			for(int i = 1; i < 48)
+		if (current[0] == u[0] &&[0] && current[0] == u[0][0] && current[0] == u[0][0] && current[0] == u[0][0) {
+			std::cout << "Find\n";
+			y++;
+			current = img.at<Vec4b>(y, x);
+			for (int i = 1; i < 48; i++) {
+				if (current == u[3]) {
+					y++;
+				}
+				else if (i == 1 && current == u[1]) {
+					y++;
+				}
+				else if (i == 2 && current == u[2]){
+					y++;
+				}
+				else if (i == 3 && current == u[4]) {
+					y++;
+				}
+				else {
+					break;
+				}
+				current = img.at<Vec4b>(y, x);
+			}
+			// Found a Unavalible Level Up
+
+			std::cout << "Found a Unavalible Level Up\n";
+
+			boxs[index] = current;
+			ids[index] = 0;
+			index++;
 		}
+
+		else  if(current == a[0]) {
+			std::cout << "Find\n";
+			y++;
+			current = img.at<Vec4b>(y, x);
+			for (int i = 1; i < 48; i++) {
+				if (current == a[3]) {
+					y++;
+				}
+				else if (i == 1 && current == a[1]) {
+					y++;
+				}
+				else if (i == 2 && current == a[2]) {
+					y++;
+				}
+				else if (i == 3 && current == a[4]) {
+					y++;
+				}
+				else {
+					break;
+				}
+				current = img.at<Vec4b>(y, x);
+			}
+			// Found a Avalible Level Up
+
+			std::cout << "Found a Avalible Level Up\n";
+
+			boxs[index] = current;
+			ids[index] = 1;
+			index++;
+		}
+
+		else  if (current == gu[0]) {
+			std::cout << "Find\n";
+			y++;
+			current = img.at<Vec4b>(y, x);
+			for (int i = 1; i < 48; i++) {
+				if (current == gu[3]) {
+					y++;
+				}
+				else if (i == 1 && current == gu[1]) {
+					y++;
+				}
+				else if (i == 2 && current == gu[2]) {
+					y++;
+				}
+				else if (i == 3 && current == gu[4]) {
+					y++;
+				}
+				else {
+					break;
+				}
+				current = img.at<Vec4b>(y, x);
+			}
+			// Found a Gold Unavalible Level Up
+
+			std::cout << "Found a Gold Unavalible Level Up\n";
+
+			boxs[index] = current;
+			ids[index] = 2;
+			index++;
+		}
+
+		else  if (current == ga[0]) {
+			std::cout << "Find\n";
+			y++;
+			current = img.at<Vec4b>(y, x);
+			for (int i = 1; i < 48; i++) {
+				if (current == ga[3]) {
+					y++;
+				}
+				else if (i == 1 && current == ga[1]) {
+					y++;
+				}
+				else if (i == 2 && current == ga[2]) {
+					y++;
+				}
+				else if (i == 3 && current == ga[4]) {
+					y++;
+				}
+				else {
+					break;
+				}
+				current = img.at<Vec4b>(y, x);
+			}
+			// Found a Gold Avalible Level Up
+
+			std::cout << "Found a Gold Avalible Level Up\n";
+
+			boxs[index] = current;
+			ids[index] = 3;
+			index++;
+		}
+		
+		else {
+		std::cout << "Nope\n";
 		y++;
+		}
+
 	}
+
+	std::cout << "Index of Heros : " << index << std::endl;
 
 	return upgradeHero(img, -1);
 }
