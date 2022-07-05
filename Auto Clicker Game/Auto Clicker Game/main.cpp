@@ -194,6 +194,10 @@ int monsterDeath(Mat img, Vec4f previous) {
 
 int upgradeHero(Mat img, int y) {
 
+	std::cout << "Upgrade At : "  << y << std::endl;
+
+	SetCursorPos(155 + gameRect.left, y + gameRect.top + 30);
+
 	return 0;
 
 	int x = 90;
@@ -224,189 +228,162 @@ int findHero(HWND hwnd, Mat img, int hero) {
 // Up : 548, 188 Down : 548, 626
 
 	int x = 548;
-	int y = 188;
+	int y = 208;
 	int wait = 80;
 
 	//Scrools up all the way
-	
-	for (int i = 0; i < 100; i++) {
+
+	SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+	waitKey(wait);
+
+	x = 548;
+	y = 188;
+
+	for (int i = 0; i < 4; i++) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		waitKey(wait);
 	}
 	
+	img = getMat(hwnd);
+
 	// Sets pixel color values
-	Vec4f u[5], a[5], gu[5], ga[5];
+	Vec4f normalA = { 141, 198, 209, 255 };
+	Vec4f goldA = { 69, 187, 217, 255 };
 
-	u[0] = 109, 154, 163, 255;
-	u[1] = 56, 87, 93, 255;
-	u[2] = 50, 78, 84, 255;
-	u[3] = 24, 44, 49, 255;
-	u[4] = 29, 50, 56, 255;
-
-	a[0] = 110, 162, 172, 255;
-	a[1] = 58, 101, 110, 255;
-	a[2] = 69, 113, 124, 255;
-	a[3] = 49, 89, 100, 255;
-	a[4] = 60, 102, 113, 255;
-
-	gu[0] = 53, 145, 169, 255;
-	gu[1] = 28, 82, 96, 255;
-	gu[2] = 34, 76, 86, 255;
-	gu[3] = 24, 44, 49, 255;
-	gu[4] = 29, 50, 56, 255;
-
-	ga[0] = 54, 153, 178, 255;
-	ga[1] = 30, 96, 113, 255;
-	ga[2] = 53, 111, 126, 255;
-	ga[3] = 49, 89, 100, 255;
-	ga[4] = 60, 102, 113, 255;
+	Vec4f normal = { 78, 125, 135, 255 };
+	Vec4f gold = { 40, 119, 139, 255 };
 
 	x = 155; 
 	y = 172;
 
 	Vec4f current;
 
-	Vec4b boxs[4];
-
-	int ids[4];
+	int location;
 
 	int index = 0;
 
-	while (y <= 592 && index < 4) {
+	if (hero <= 4) {
+		while (y <= 592) {
+			//std::cout << current << "\n";
 
-		current = img.at<Vec4b>(y, x);
-
-		if (current[0] == u[0] &&[0] && current[0] == u[0][0] && current[0] == u[0][0] && current[0] == u[0][0) {
-			std::cout << "Find\n";
-			y++;
 			current = img.at<Vec4b>(y, x);
-			for (int i = 1; i < 48; i++) {
-				if (current == u[3]) {
-					y++;
-				}
-				else if (i == 1 && current == u[1]) {
-					y++;
-				}
-				else if (i == 2 && current == u[2]){
-					y++;
-				}
-				else if (i == 3 && current == u[4]) {
-					y++;
-				}
-				else {
-					break;
-				}
+
+			if (current == normalA) {
+				y++;
 				current = img.at<Vec4b>(y, x);
+				if (current == normal) {
+					index++;
+					std::cout << "Found " << y << "\n";
+					if (index == hero) {
+						return upgradeHero(img, y);
+					}
+					y += 60;
+
+				}
 			}
-			// Found a Unavalible Level Up
-
-			std::cout << "Found a Unavalible Level Up\n";
-
-			boxs[index] = current;
-			ids[index] = 0;
-			index++;
+			else if (current == goldA) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == gold) {
+					index++;
+					std::cout << "Found " << y << "\n";
+					if (index == hero) {
+						return upgradeHero(img, y);
+					}
+					y += 60;
+				}
+			}
+			else {
+				y++;
+			}
 		}
+	}
 
-		else  if(current == a[0]) {
-			std::cout << "Find\n";
-			y++;
+	bool isClear = true;
+
+	while (index != hero) {
+		img = getMat(hwnd);
+
+		int  temp = 0;
+		int location[5];
+		location[4] = 0;
+		int top = 0;
+		int bottom = 0;
+		y = 172;
+
+		while (y < 640) {
+			//std::cout << current << "\n";
+
 			current = img.at<Vec4b>(y, x);
-			for (int i = 1; i < 48; i++) {
-				if (current == a[3]) {
-					y++;
-				}
-				else if (i == 1 && current == a[1]) {
-					y++;
-				}
-				else if (i == 2 && current == a[2]) {
-					y++;
-				}
-				else if (i == 3 && current == a[4]) {
-					y++;
-				}
-				else {
-					break;
-				}
+
+			if (current == normalA) {
+				y++;
 				current = img.at<Vec4b>(y, x);
+				if (current == normal) {
+					//location[temp] = y;
+					temp++;
+
+					if (top == 0) {
+						top = y;
+					}
+					bottom = y;
+					std::cout << "Found " << y << "\n";
+					y += 60;
+
+				}
 			}
-			// Found a Avalible Level Up
-
-			std::cout << "Found a Avalible Level Up\n";
-
-			boxs[index] = current;
-			ids[index] = 1;
-			index++;
+			else if (current == goldA) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == gold) {
+					location[temp] = y;
+					temp++;
+					if (top == 0) {
+						top = y;
+					}
+					bottom = y;
+					std::cout << "Found " << y << "\n";
+					y += 60;
+				}
+			}
+			else {
+				y++;
+			}
 		}
+		std::cout << temp << " Pass\n";
 
-		else  if (current == gu[0]) {
-			std::cout << "Find\n";
-			y++;
-			current = img.at<Vec4b>(y, x);
-			for (int i = 1; i < 48; i++) {
-				if (current == gu[3]) {
-					y++;
-				}
-				else if (i == 1 && current == gu[1]) {
-					y++;
-				}
-				else if (i == 2 && current == gu[2]) {
-					y++;
-				}
-				else if (i == 3 && current == gu[4]) {
-					y++;
-				}
-				else {
-					break;
-				}
-				current = img.at<Vec4b>(y, x);
-			}
-			// Found a Gold Unavalible Level Up
+		//std::cout << "Done\n";
 
-			std::cout << "Found a Gold Unavalible Level Up\n";
-
-			boxs[index] = current;
-			ids[index] = 2;
-			index++;
-		}
-
-		else  if (current == ga[0]) {
-			std::cout << "Find\n";
-			y++;
-			current = img.at<Vec4b>(y, x);
-			for (int i = 1; i < 48; i++) {
-				if (current == ga[3]) {
-					y++;
-				}
-				else if (i == 1 && current == ga[1]) {
-					y++;
-				}
-				else if (i == 2 && current == ga[2]) {
-					y++;
-				}
-				else if (i == 3 && current == ga[4]) {
-					y++;
-				}
-				else {
-					break;
-				}
-				current = img.at<Vec4b>(y, x);
-			}
-			// Found a Gold Avalible Level Up
-
-			std::cout << "Found a Gold Avalible Level Up\n";
-
-			boxs[index] = current;
-			ids[index] = 3;
-			index++;
+		if (index == 0) {
+			index = 4;
+			//std::cout << "One time\n";
 		}
 		
+		if (temp == 4 && isClear) {
+			isClear = false;
+			index++;
+			std::cout << "++ : " << bottom << "\n";
+			if (index == hero) {
+				// y == hero position
+				return upgradeHero(img, bottom);
+			}
+		}
 		else {
-		std::cout << "Nope\n";
-		y++;
+			isClear = true;
 		}
 
+		SetCursorPos(548 + gameRect.left, 622 + gameRect.top + 30);
+		mouse_event(MOUSEEVENTF_LEFTDOWN, 548 + gameRect.left, 622 + gameRect.top + 30, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, 548 + gameRect.left, 622 + gameRect.top + 30, 0, 0);
+		waitKey(wait);
+		waitKey(wait);
+		waitKey(wait);
+		waitKey(wait);
+		std::cout << "Scrool\n\n";
 	}
 
 	std::cout << "Index of Heros : " << index << std::endl;
@@ -560,7 +537,7 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 5;
+	int heroUpgrade = 10;
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
