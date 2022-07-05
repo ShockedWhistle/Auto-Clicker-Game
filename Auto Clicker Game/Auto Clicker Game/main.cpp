@@ -303,6 +303,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		}
 	}
 
+	int prev;
 	bool isClear = true;
 
 	while (index != hero) {
@@ -362,19 +363,32 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			index = 4;
 			//std::cout << "One time\n";
 		}
-		
-		if (temp == 4 && isClear) {
-			isClear = false;
+
+		if (temp == 4 && prev == 5) {
 			index++;
+			isClear = true;
 			std::cout << "++ : " << bottom << "\n";
 			if (index == hero) {
 				// y == hero position
 				return upgradeHero(img, bottom);
 			}
 		}
-		else {
+		else if (temp == 4 && prev == 4 && isClear) {
+			index++;
+			isClear = false;
+			std::cout << "++ : " << bottom << "\n";
+			if (index == hero) {
+				// y == hero position
+				return upgradeHero(img, bottom);
+			}
+			isClear = false;
+		}
+
+		if (temp == 5) {
 			isClear = true;
 		}
+
+		prev = temp;
 
 		SetCursorPos(548 + gameRect.left, 622 + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, 548 + gameRect.left, 622 + gameRect.top + 30, 0, 0);
@@ -537,10 +551,11 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 10;
+	int heroUpgrade = 4;
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
+	std::cout << "Find Hero : " << heroUpgrade << "\n";
 	findHero(hwnd, temp, heroUpgrade);
 	return 1;
 
