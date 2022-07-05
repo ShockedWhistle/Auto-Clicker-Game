@@ -556,3 +556,51 @@ int main() {
 	Mat temp = getMat(hwnd);
 
 	std::cout << "Find Hero : " << heroUpgrade << "\n";
+	findHero(hwnd, temp, heroUpgrade);
+	return 1;
+
+	while (true) {
+		Mat img = getMat(hwnd);
+
+		checkAbility(img);
+
+		Vec4f previous = img.at<Vec4b>(550, 787);
+		bodyCount += monsterDeath(img, previous);
+
+		//findHero(hwnd, img, heroUpgrade);
+
+		if (timer % 100 == 0) {
+			clickMonster();
+		}
+
+		if (timer % 1000 == 0 && timer != 0) {
+			findFish();
+			timer = 0;
+		}
+
+		Vec4f boss = img.at<Vec4b>(174, 824);
+		if (boss[0] == 151 && boss[1] == 118 && boss[2] == 98) {
+			//if (bossFight()) {
+				//nextLevel();
+			//}
+			//else {
+				//prevLevel();
+				//bodyCount = -200;
+			//}
+		}
+
+		//if (bodyCount >= 20) {
+			//nextLevel();
+			//bodyCount = 0;
+		//}
+
+		timer++;
+		waitKey(100);
+
+		// Stop Button
+		if (GetKeyState('B') & 0x8000) {
+			return 0;
+		}
+	}
+	return 0;
+}
