@@ -69,11 +69,13 @@ void prevLevel() {
 	mouse_event(MOUSEEVENTF_LEFTUP, 786 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
 }
 
-void clickMonster() {
+int clickMonster(HWND hwnd, Mat img) {
 	int curX = 580; // 580
 	int curY = 180; // 130
 	int wait = 80;
 	int pixelStep = 20;
+	Vec4f rgba = img.at<Vec4b>(550, 787);
+	int bodyCount = 0;
 
 	// left
 	while (curY != 660) { // Left of abilities
@@ -82,6 +84,11 @@ void clickMonster() {
 		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 		curY += pixelStep;
 		waitKey(wait);
+		if (monsterDeath(img, rgba)) {
+			bodyCount++;
+		}
+		img = getMat(hwnd);
+		rgba = img.at<Vec4b>(550, 787);
 	}
 
 	curX = 660; // 580
@@ -95,6 +102,11 @@ void clickMonster() {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX += pixelStep;
 			waitKey(wait);
+			if (monsterDeath(img, rgba)) {
+				bodyCount++;
+			}
+			img = getMat(hwnd);
+			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
 		while (curX > 660) {
@@ -103,6 +115,11 @@ void clickMonster() {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX -= pixelStep;
 			waitKey(wait);
+			if (monsterDeath(img, rgba)) {
+				bodyCount++;
+			}
+			img = getMat(hwnd);
+			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
 	}
@@ -117,6 +134,11 @@ void clickMonster() {
 		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 		curY += pixelStep;
 		waitKey(wait);
+		if (monsterDeath(img, rgba)) {
+			bodyCount++;
+		}
+		img = getMat(hwnd);
+		rgba = img.at<Vec4b>(550, 787);
 	}
 	
 	curX = 1060; // 580
@@ -128,6 +150,11 @@ void clickMonster() {
 		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 		curY += pixelStep;
 		waitKey(wait);
+		if (monsterDeath(img, rgba)) {
+			bodyCount++;
+		}
+		img = getMat(hwnd);
+		rgba = img.at<Vec4b>(550, 787);
 	}
 	
 	curX = 660; // 580
@@ -141,6 +168,11 @@ void clickMonster() {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX += pixelStep;
 			waitKey(wait);
+			if (monsterDeath(img, rgba)) {
+				bodyCount++;
+			}
+			img = getMat(hwnd);
+			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
 		while (curX > 660) {
@@ -149,6 +181,11 @@ void clickMonster() {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX -= pixelStep;
 			waitKey(wait);
+			if (monsterDeath(img, rgba)) {
+				bodyCount++;
+			}
+			img = getMat(hwnd);
+			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
 	}
@@ -164,6 +201,11 @@ void clickMonster() {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX += pixelStep;
 			waitKey(wait);
+			if (monsterDeath(img, rgba)) {
+				bodyCount++;
+			}
+			img = getMat(hwnd);
+			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
 		while (curX > 940) {
@@ -172,24 +214,30 @@ void clickMonster() {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX -= pixelStep;
 			waitKey(wait);
+			if (monsterDeath(img, rgba)) {
+				bodyCount++;
+			}
+			img = getMat(hwnd);
+			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
 	}
+	return bodyCount;
 }
 
-int monsterDeath(Mat img, Vec4f previous) {
+bool monsterDeath(Mat img, Vec4f previous) {
 	//787, 582
 	Vec4f rgba = img.at<Vec4b>(550, 787); // 550, 787  :  60, 60. 61, 255 
 	// Death 51, 51, 51, 255
 	//cout << rgba << "  :  " << death << endl;
 	if (previous[0] == 51) {
-		return 0;
+		return false;
 	}
 	if (rgba[0] == 51 && rgba[1] == 51 && rgba[2] == 51) {
 		std::cout << "Another One" << std::endl;
-		return 1;
+		return true;
 	}
-	return 0;
+	return false;
 }
 
 int upgradeHero(HWND hwnd, Mat img, int y) {
@@ -312,7 +360,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
-						return upgradeHero(hwnd, img, y);
+						return -1;
 					}
 					y += 60;
 
@@ -325,7 +373,19 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
-						return upgradeHero(hwnd, img, y);
+						return -1;
+					}
+					y += 60;
+				}
+			}
+			else if (current == goldAU2) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == goldU2) {
+					index++;
+					std::cout << "Found " << y << "\n";
+					if (index == hero) {
+						return -1;
 					}
 					y += 60;
 				}
@@ -497,8 +557,8 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	return -1;
 }
 
-bool bossFight() {
-	clickMonster();
+bool bossFight(HWND hwnd, Mat img) {
+	clickMonster(hwnd, img);
 	return false;
 }
 
@@ -643,7 +703,7 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 7;
+	int heroUpgrade = 28;
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
@@ -651,6 +711,7 @@ int main() {
 	Mat img;
 	img = getMat(hwnd);
 	findHero(hwnd, img, heroUpgrade);
+	
 
 	return 1;
 }
