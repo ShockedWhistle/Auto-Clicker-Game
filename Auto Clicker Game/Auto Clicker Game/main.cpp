@@ -257,6 +257,15 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	Vec4f normal = { 176, 237, 247, 0 };
 	Vec4f gold = { 49, 89, 100, 0 };
 
+	Vec4f normalAU = { 35, 58, 64, 0 };
+	Vec4f goldAU = { 38, 108, 125, 0 };
+
+	Vec4f normalU = { 24, 44, 49, 0 };
+	Vec4f goldU = { 28, 77, 88, 0 };
+
+	Vec4f goldAU2 = { 29, 50, 56, 0 };
+	Vec4f goldU2 = { 24, 44, 49, 0 };
+
 	x = 155; 
 	y = 172;
 
@@ -297,13 +306,37 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					y += 60;
 				}
 			}
+			else if (current == normalAU) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == normalU) {
+					index++;
+					std::cout << "Found " << y << "\n";
+					if (index == hero) {
+						return upgradeHero(img, y);
+					}
+					y += 60;
+
+				}
+			}
+			else if (current == goldAU) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == goldU) {
+					index++;
+					std::cout << "Found " << y << "\n";
+					if (index == hero) {
+						return upgradeHero(img, y);
+					}
+					y += 60;
+				}
+			}
 			else {
 				y++;
 			}
 		}
 	}
-
-	int prev;
+	int prev = 0;
 	bool isClear = true;
 
 	while (index != hero) {
@@ -317,7 +350,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		y = 172;
 
 		while (y < 640) {
-			//std::cout << current << "\n";
+			std::cout << current << "\n";
 
 			current = img.at<Vec4b>(y, x);
 
@@ -341,6 +374,50 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				y++;
 				current = img.at<Vec4b>(y, x);
 				if (current == gold) {
+					location[temp] = y;
+					temp++;
+					if (top == 0) {
+						top = y;
+					}
+					bottom = y;
+					std::cout << "Found " << y << "\n";
+					y += 60;
+				}
+			}
+			else if (current == normalAU) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == normalU) {
+					//location[temp] = y;
+					temp++;
+
+					if (top == 0) {
+						top = y;
+					}
+					bottom = y;
+					std::cout << "Found " << y << "\n";
+					y += 60;
+
+				}
+			}
+			else if (current == goldAU) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == goldU) {
+					location[temp] = y;
+					temp++;
+					if (top == 0) {
+						top = y;
+					}
+					bottom = y;
+					std::cout << "Found " << y << "\n";
+					y += 60;
+				}
+			}
+			else if (current == goldAU2) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == goldU2) {
 					location[temp] = y;
 					temp++;
 					if (top == 0) {
@@ -551,7 +628,7 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 10;
+	int heroUpgrade = 12;
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
