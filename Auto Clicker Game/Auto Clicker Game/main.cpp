@@ -251,11 +251,11 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	img = getMat(hwnd);
 
 	// Sets pixel color values
-	Vec4f normalA = { 141, 198, 209, 255 };
-	Vec4f goldA = { 69, 187, 217, 255 };
+	Vec4f normalA = { 165, 225, 235, 0 };
+	Vec4f goldA = { 60, 102, 113, 0 };
 
-	Vec4f normal = { 78, 125, 135, 255 };
-	Vec4f gold = { 40, 119, 139, 255 };
+	Vec4f normal = { 176, 237, 247, 0 };
+	Vec4f gold = { 49, 89, 100, 0 };
 
 	x = 155; 
 	y = 172;
@@ -268,7 +268,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 	if (hero <= 4) {
 		while (y <= 592) {
-			//std::cout << current << "\n";
+			std::cout << current << "\n";
 
 			current = img.at<Vec4b>(y, x);
 
@@ -551,8 +551,14 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 4;
+	int heroUpgrade = 10;
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
 	std::cout << "Find Hero : " << heroUpgrade << "\n";
+	Mat img;
+	img = getMat(hwnd);
+	findHero(hwnd, img, heroUpgrade);
+
+	return 1;
+}
