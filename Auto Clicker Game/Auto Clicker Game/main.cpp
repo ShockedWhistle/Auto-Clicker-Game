@@ -192,34 +192,33 @@ int monsterDeath(Mat img, Vec4f previous) {
 	return 0;
 }
 
-int upgradeHero(Mat img, int y) {
+int upgradeHero(HWND hwnd, Mat img, int y) {
 
-	std::cout << "Upgrade At : "  << y << std::endl;
+	int x = 50;
+	y += 20;
+	std::cout << "Upgrade At : " << y << std::endl;
 
-	SetCursorPos(155 + gameRect.left, y + gameRect.top + 30);
-
-	return 0;
-
-	int x = 90;
-	y += 60;
-	std::cout << y << std::endl;
-	//Vec4f level = img.at<Vec4b>(y, x);
 	int wait = 80;
 	int upgrade = 0;
-
-	std::cout << "Level : " << x << ", " << y << std::endl;
-
+	Vec4f available = { 255, 197, 115, 0 };
+	Vec4f available2 = { 254, 250, 224, 0 };
 	SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
-	/*
-	while (level[0] == 255 && level[1] == 184 && level[2] == 81) {
+	Vec4f current = img.at<Vec4b>(y, x);
+
+	std::cout << current << "\n";
+	
+	while (current[0] == available[0] && available[1] - 5 <= current[1] <= available[1] + 5 && available[2] - 5 <= current[2] <= available[2] || current[0] == available2[0] && available2[1] - 5 <= current[1] <= available2[1] + 5 && available2[2] - 5 <= current[2] <= available2[2]) {
 		upgrade++;
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		waitKey(wait);
-		level = img.at<Vec4b>(y, x);
+
+		img = getMat(hwnd);
+		current = img.at<Vec4b>(y, x);
+		std::cout << "While : " << current << "\n";
 	}
-	*/
+	
 	return upgrade;
 }
 
@@ -277,7 +276,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 	if (hero <= 4) {
 		while (y <= 592) {
-			std::cout << current << "\n";
+			//std::cout << current << "\n";
 
 			current = img.at<Vec4b>(y, x);
 
@@ -288,7 +287,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
-						return upgradeHero(img, y);
+						return upgradeHero(hwnd, img, y);
 					}
 					y += 60;
 
@@ -301,7 +300,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
-						return upgradeHero(img, y);
+						return upgradeHero(hwnd, img, y);
 					}
 					y += 60;
 				}
@@ -313,7 +312,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
-						return upgradeHero(img, y);
+						return upgradeHero(hwnd, img, y);
 					}
 					y += 60;
 
@@ -326,7 +325,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
-						return upgradeHero(img, y);
+						return upgradeHero(hwnd, img, y);
 					}
 					y += 60;
 				}
@@ -347,10 +346,11 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		location[4] = 0;
 		int top = 0;
 		int bottom = 0;
+		bool isAvailable;
 		y = 172;
 
 		while (y < 640) {
-			std::cout << current << "\n";
+			//std::cout << current << "\n";
 
 			current = img.at<Vec4b>(y, x);
 
@@ -365,6 +365,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 						top = y;
 					}
 					bottom = y;
+					isAvailable = true;
 					std::cout << "Found " << y << "\n";
 					y += 60;
 
@@ -380,6 +381,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 						top = y;
 					}
 					bottom = y;
+					isAvailable = true;
 					std::cout << "Found " << y << "\n";
 					y += 60;
 				}
@@ -395,6 +397,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 						top = y;
 					}
 					bottom = y;
+					isAvailable = false;
 					std::cout << "Found " << y << "\n";
 					y += 60;
 
@@ -410,6 +413,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 						top = y;
 					}
 					bottom = y;
+					isAvailable = false;
 					std::cout << "Found " << y << "\n";
 					y += 60;
 				}
@@ -424,6 +428,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 						top = y;
 					}
 					bottom = y;
+					isAvailable = false;
 					std::cout << "Found " << y << "\n";
 					y += 60;
 				}
@@ -447,7 +452,12 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			std::cout << "++ : " << bottom << "\n";
 			if (index == hero) {
 				// y == hero position
-				return upgradeHero(img, bottom);
+				if (isAvailable) {
+					return upgradeHero(hwnd, img, bottom);
+				}
+				else {
+					return -1;
+				}
 			}
 		}
 		else if (temp == 4 && prev == 4 && isClear) {
@@ -456,7 +466,12 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			std::cout << "++ : " << bottom << "\n";
 			if (index == hero) {
 				// y == hero position
-				return upgradeHero(img, bottom);
+				if (isAvailable) {
+					return upgradeHero(hwnd, img, bottom);
+				}
+				else {
+					return -1;
+				}
 			}
 			isClear = false;
 		}
@@ -479,7 +494,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 	std::cout << "Index of Heros : " << index << std::endl;
 
-	return upgradeHero(img, -1);
+	return -1;
 }
 
 bool bossFight() {
@@ -628,7 +643,7 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 12;
+	int heroUpgrade = 7;
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
