@@ -69,6 +69,21 @@ void prevLevel() {
 	mouse_event(MOUSEEVENTF_LEFTUP, 786 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
 }
 
+bool monsterDeath(Mat img, Vec4f previous) {
+	//787, 582
+	Vec4f rgba = img.at<Vec4b>(550, 787); // 550, 787  :  60, 60. 61, 255 
+	// Death 51, 51, 51, 255
+	//cout << rgba << "  :  " << death << endl;
+	if (previous[0] == 51) {
+		return false;
+	}
+	if (rgba[0] == 51 && rgba[1] == 51 && rgba[2] == 51) {
+		std::cout << "Another One" << std::endl;
+		return true;
+	}
+	return false;
+}
+
 int clickMonster(HWND hwnd, Mat img) {
 	int curX = 580; // 580
 	int curY = 180; // 130
@@ -223,21 +238,6 @@ int clickMonster(HWND hwnd, Mat img) {
 		curY += pixelStep;
 	}
 	return bodyCount;
-}
-
-bool monsterDeath(Mat img, Vec4f previous) {
-	//787, 582
-	Vec4f rgba = img.at<Vec4b>(550, 787); // 550, 787  :  60, 60. 61, 255 
-	// Death 51, 51, 51, 255
-	//cout << rgba << "  :  " << death << endl;
-	if (previous[0] == 51) {
-		return false;
-	}
-	if (rgba[0] == 51 && rgba[1] == 51 && rgba[2] == 51) {
-		std::cout << "Another One" << std::endl;
-		return true;
-	}
-	return false;
 }
 
 int upgradeHero(HWND hwnd, Mat img, int y) {
@@ -703,7 +703,7 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 28;
+	int heroUpgrade = 14;
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
