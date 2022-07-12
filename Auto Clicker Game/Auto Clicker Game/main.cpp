@@ -703,7 +703,7 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
-	int heroUpgrade = 14;
+	int heroUpgrade = 1;
 	int timer = 0;
 	Mat temp = getMat(hwnd);
 
