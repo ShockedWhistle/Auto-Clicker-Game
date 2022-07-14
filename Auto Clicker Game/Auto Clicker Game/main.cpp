@@ -99,10 +99,10 @@ int clickMonster(HWND hwnd, Mat img) {
 		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 		curY += pixelStep;
 		waitKey(wait);
+		img = getMat(hwnd);
 		if (monsterDeath(img, rgba)) {
 			bodyCount++;
 		}
-		img = getMat(hwnd);
 		rgba = img.at<Vec4b>(550, 787);
 	}
 
@@ -117,10 +117,10 @@ int clickMonster(HWND hwnd, Mat img) {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX += pixelStep;
 			waitKey(wait);
+			img = getMat(hwnd);
 			if (monsterDeath(img, rgba)) {
 				bodyCount++;
 			}
-			img = getMat(hwnd);
 			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
@@ -130,10 +130,10 @@ int clickMonster(HWND hwnd, Mat img) {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX -= pixelStep;
 			waitKey(wait);
+			img = getMat(hwnd);
 			if (monsterDeath(img, rgba)) {
 				bodyCount++;
 			}
-			img = getMat(hwnd);
 			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
@@ -149,10 +149,10 @@ int clickMonster(HWND hwnd, Mat img) {
 		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 		curY += pixelStep;
 		waitKey(wait);
+		img = getMat(hwnd);
 		if (monsterDeath(img, rgba)) {
 			bodyCount++;
 		}
-		img = getMat(hwnd);
 		rgba = img.at<Vec4b>(550, 787);
 	}
 	
@@ -165,10 +165,10 @@ int clickMonster(HWND hwnd, Mat img) {
 		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 		curY += pixelStep;
 		waitKey(wait);
+		img = getMat(hwnd);
 		if (monsterDeath(img, rgba)) {
 			bodyCount++;
 		}
-		img = getMat(hwnd);
 		rgba = img.at<Vec4b>(550, 787);
 	}
 	
@@ -183,10 +183,10 @@ int clickMonster(HWND hwnd, Mat img) {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX += pixelStep;
 			waitKey(wait);
+			img = getMat(hwnd);
 			if (monsterDeath(img, rgba)) {
 				bodyCount++;
 			}
-			img = getMat(hwnd);
 			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
@@ -196,10 +196,10 @@ int clickMonster(HWND hwnd, Mat img) {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX -= pixelStep;
 			waitKey(wait);
+			img = getMat(hwnd);
 			if (monsterDeath(img, rgba)) {
 				bodyCount++;
 			}
-			img = getMat(hwnd);
 			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
@@ -216,10 +216,10 @@ int clickMonster(HWND hwnd, Mat img) {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX += pixelStep;
 			waitKey(wait);
+			img = getMat(hwnd);
 			if (monsterDeath(img, rgba)) {
 				bodyCount++;
 			}
-			img = getMat(hwnd);
 			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
@@ -229,10 +229,10 @@ int clickMonster(HWND hwnd, Mat img) {
 			mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top, 0, 0);
 			curX -= pixelStep;
 			waitKey(wait);
+			img = getMat(hwnd);
 			if (monsterDeath(img, rgba)) {
 				bodyCount++;
 			}
-			img = getMat(hwnd);
 			rgba = img.at<Vec4b>(550, 787);
 		}
 		curY += pixelStep;
@@ -335,6 +335,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
+						return y;
 						return upgradeHero(hwnd, img, y);
 					}
 					y += 60;
@@ -348,6 +349,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
+						return y;
 						return upgradeHero(hwnd, img, y);
 					}
 					y += 60;
@@ -360,6 +362,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
+						return y;
 						return -1;
 					}
 					y += 60;
@@ -373,6 +376,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
+						return y;
 						return -1;
 					}
 					y += 60;
@@ -385,6 +389,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					index++;
 					std::cout << "Found " << y << "\n";
 					if (index == hero) {
+						return y;
 						return -1;
 					}
 					y += 60;
@@ -394,6 +399,8 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				y++;
 			}
 		}
+		return -1;
+		return -2;
 	}
 	int prev = 0;
 	bool isClear = true;
@@ -402,9 +409,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		img = getMat(hwnd);
 
 		int  temp = 0;
-		int location[5];
-		location[4] = 0;
-		int top = 0;
+		
 		int bottom = 0;
 		bool isAvailable;
 		y = 172;
@@ -418,12 +423,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				y++;
 				current = img.at<Vec4b>(y, x);
 				if (current == normal) {
-					//location[temp] = y;
 					temp++;
-
-					if (top == 0) {
-						top = y;
-					}
 					bottom = y;
 					isAvailable = true;
 					std::cout << "Found " << y << "\n";
@@ -435,11 +435,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				y++;
 				current = img.at<Vec4b>(y, x);
 				if (current == gold) {
-					location[temp] = y;
 					temp++;
-					if (top == 0) {
-						top = y;
-					}
 					bottom = y;
 					isAvailable = true;
 					std::cout << "Found " << y << "\n";
@@ -450,12 +446,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				y++;
 				current = img.at<Vec4b>(y, x);
 				if (current == normalU) {
-					//location[temp] = y;
 					temp++;
-
-					if (top == 0) {
-						top = y;
-					}
 					bottom = y;
 					isAvailable = false;
 					std::cout << "Found " << y << "\n";
@@ -467,11 +458,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				y++;
 				current = img.at<Vec4b>(y, x);
 				if (current == goldU) {
-					location[temp] = y;
 					temp++;
-					if (top == 0) {
-						top = y;
-					}
 					bottom = y;
 					isAvailable = false;
 					std::cout << "Found " << y << "\n";
@@ -482,11 +469,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				y++;
 				current = img.at<Vec4b>(y, x);
 				if (current == goldU2) {
-					location[temp] = y;
 					temp++;
-					if (top == 0) {
-						top = y;
-					}
 					bottom = y;
 					isAvailable = false;
 					std::cout << "Found " << y << "\n";
@@ -513,9 +496,11 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			if (index == hero) {
 				// y == hero position
 				if (isAvailable) {
+					return bottom;
 					return upgradeHero(hwnd, img, bottom);
 				}
 				else {
+					return bottom;
 					return -1;
 				}
 			}
@@ -527,9 +512,11 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			if (index == hero) {
 				// y == hero position
 				if (isAvailable) {
+					return bottom;
 					return upgradeHero(hwnd, img, bottom);
 				}
 				else {
+					return bottom;
 					return -1;
 				}
 			}
@@ -538,6 +525,9 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 		if (temp == 5) {
 			isClear = true;
+		}
+		else if (temp == 3) {
+			return -1;
 		}
 
 		prev = temp;
@@ -552,13 +542,11 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		std::cout << "Scrool\n\n";
 	}
 
-	std::cout << "Index of Heros : " << index << std::endl;
-
 	return -1;
 }
 
-bool bossFight(HWND hwnd, Mat img) {
-	clickMonster(hwnd, img);
+bool checkBoss(HWND hwnd, Mat img) {
+	// Check if boss fight;
 	return false;
 }
 
@@ -636,8 +624,6 @@ void checkAbility(Mat img) {
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top, 0, 0);
 	}
 
-
-
 }
 
 void findFish() {
@@ -703,15 +689,75 @@ int main() {
 	GetWindowRect(hwnd, &gameRect);
 
 	int bodyCount = 0;
+	int killsNeeded = 10;
 	int heroUpgrade = 1;
+	int heroY = 0;
 	int timer = 0;
+	int fail = 0;
 	Mat temp = getMat(hwnd);
 
 	std::cout << "Find Hero : " << heroUpgrade << "\n";
 	Mat img;
-	img = getMat(hwnd);
-	findHero(hwnd, img, heroUpgrade);
-	
+
+	bool isOn = true;
+	while (isOn) {
+		img = getMat(hwnd);
+
+		checkAbility(img);
+
+		if (timer % 10 == 0) {
+			heroY = findHero(hwnd, img, heroUpgrade);
+			if (heroY <= 0) {
+				heroUpgrade = 1;
+				heroY = findHero(hwnd, img, heroUpgrade);
+			}
+
+			bodyCount += clickMonster(hwnd, img);
+		}
+
+		if (timer % 100 == 0) {
+			heroUpgrade++;
+		}
+		/*
+		if (timer % 1000 == 0) {
+			findFish();
+		}
+		*/
+
+		upgradeHero(hwnd, img, heroY);
+
+		if (bodyCount >= killsNeeded) {
+			nextLevel();
+			bodyCount = 0;
+			if (checkBoss(hwnd, img)) {
+				bodyCount += clickMonster(hwnd, img);
+				bodyCount += clickMonster(hwnd, img);
+				if (bodyCount >= 1) {
+					nextLevel();
+					bodyCount = 0;
+				}
+				else {
+					prevLevel();
+					bodyCount = -20;
+					killsNeeded += 10;
+				}
+			}
+		}
+
+		// Stop Button
+		for (int i = 0; i < 30; i++) {
+			if (GetKeyState('B') & 0x8000) {
+				isOn = false;
+			}
+			else {
+				waitKey(2);
+			}
+		}
+
+		timer++;
+	}
+
+	std::cout << "Done\n";
 
 	return 1;
 }
