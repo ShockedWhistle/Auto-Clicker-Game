@@ -275,7 +275,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 // Up : 548, 188 Down : 548, 626
 
 	int x = 548;
-	int y = 208;
+	int y = 240;
 	int wait = 80;
 
 	//Scrools up all the way
@@ -288,7 +288,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	x = 548;
 	y = 188;
 
-	for (int i = 0; i < 4; i++) {
+	for (int i = 0; i < 6; i++) {
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
@@ -299,19 +299,26 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 	// Sets pixel color values
 	Vec4f normalA = { 165, 225, 235, 0 };
-	Vec4f goldA = { 60, 102, 113, 0 };
-
 	Vec4f normal = { 176, 237, 247, 0 };
-	Vec4f gold = { 49, 89, 100, 0 };
 
 	Vec4f normalAU = { 35, 58, 64, 0 };
-	Vec4f goldAU = { 38, 108, 125, 0 };
-
 	Vec4f normalU = { 24, 44, 49, 0 };
+
+	Vec4f goldA = { 60, 102, 113, 0 };
+	Vec4f gold = { 49, 89, 100, 0 };
+
+	Vec4f goldAU = { 38, 108, 125, 0 };
 	Vec4f goldU = { 28, 77, 88, 0 };
+
+	Vec4f goldAA3 = { 58, 112, 126, 0 };
+	Vec4f goldA3 = { 49, 89, 100, 0 };
 
 	Vec4f goldAU2 = { 29, 50, 56, 0 };
 	Vec4f goldU2 = { 24, 44, 49, 0 };
+
+	Vec4f goldAA4 = { 53, 111, 126, 0 };
+	Vec4f goldA4 = { 49, 89, 100, 0 };
+
 
 	x = 155; 
 	y = 172;
@@ -395,15 +402,55 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					y += 60;
 				}
 			}
+			else if (current == goldAA3) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == goldA3) {
+					index++;
+					std::cout << "Found " << y << "\n";
+					if (index == hero) {
+						return y;
+					}
+					y += 60;
+				}
+			}
+			else if (current == goldAA4) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == goldA4) {
+					index++;
+					std::cout << "Found " << y << "\n";
+					if (index == hero) {
+						return y;
+					}
+					y += 60;
+				}
+			}
+			/*
+			else if (goldA[0] - 10 <= current[0] <= goldA[0] + 10 && goldA[1] - 2 <= current[1] <= goldA[1] + 2 && goldA[2] - 10 <= current[2] <= goldA[2] + 10) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (gold[0] - 10 <= current[0] <= gold[0] + 10 && gold[1] - 10 <= current[1] <= gold[1] + 10) {
+					index++;
+					std::cout << "\n\n\nFound Net " << y << "\n\n\n";
+					if (index == hero) {
+						return y;
+					}
+					y += 60;
+				}
+			}
+			*/
 			else {
 				y++;
 			}
 		}
 		return -1;
-		return -2;
 	}
 	int prev = 0;
 	bool isClear = true;
+	int yJump = 56;
+
+	int miss = 0;
 
 	while (index != hero) {
 		img = getMat(hwnd);
@@ -414,7 +461,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		bool isAvailable;
 		y = 172;
 
-		while (y < 640) {
+		while (y < 639) {
 			//std::cout << current << "\n";
 
 			current = img.at<Vec4b>(y, x);
@@ -427,8 +474,9 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					bottom = y;
 					isAvailable = true;
 					std::cout << "Found " << y << "\n";
-					y += 60;
-
+					y += yJump;
+					std::cout << miss << " : Misses\n\n\n";
+					miss = 0;
 				}
 			}
 			else if (current == goldA) {
@@ -439,7 +487,9 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					bottom = y;
 					isAvailable = true;
 					std::cout << "Found " << y << "\n";
-					y += 60;
+					y += yJump;
+					std::cout << miss << " : Misses\n\n\n";
+					miss = 0;
 				}
 			}
 			else if (current == normalAU) {
@@ -450,8 +500,9 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					bottom = y;
 					isAvailable = false;
 					std::cout << "Found " << y << "\n";
-					y += 60;
-
+					y += yJump;
+					std::cout << miss << " : Misses\n\n\n";
+					miss = 0;
 				}
 			}
 			else if (current == goldAU) {
@@ -462,7 +513,9 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					bottom = y;
 					isAvailable = false;
 					std::cout << "Found " << y << "\n";
-					y += 60;
+					y += yJump;
+					std::cout << miss << " : Misses\n\n\n";
+					miss = 0;
 				}
 			}
 			else if (current == goldAU2) {
@@ -473,10 +526,52 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					bottom = y;
 					isAvailable = false;
 					std::cout << "Found " << y << "\n";
+					y += yJump;
+					std::cout << miss << " : Misses\n\n\n";
+					miss = 0;
+				}
+			}
+			else if (current == goldAA3) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == goldA3) {
+					temp++;
+					bottom = y;
+					isAvailable = true;
+					std::cout << "Found " << y << "\n";
+					y += yJump;
+					std::cout << miss << " : Misses\n\n\n";
+					miss = 0;
+				}
+			}
+			else if (current == goldAA4) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == goldA4) {
+					temp++;
+					bottom = y;
+					isAvailable = true;
+					std::cout << "Found " << y << "\n";
+					y += yJump;
+					std::cout << miss << " : Misses\n\n\n";
+					miss = 0;
+				}
+			}
+			/*
+			else if (current == gold) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == gold) {
+					temp++;
+					bottom = y;
+					isAvailable = true;
+					std::cout << "\n\n\nFound Net " << y << "\n\n\n";
 					y += 60;
 				}
 			}
+			*/
 			else {
+				miss++;
 				y++;
 			}
 		}
@@ -690,15 +785,67 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 1;
+	int heroUpgrade = 14;
 	int heroY = 0;
 	int timer = 0;
 	int fail = 0;
 	Mat temp = getMat(hwnd);
 
 	std::cout << "Find Hero : " << heroUpgrade << "\n";
-	Mat img;
+	Mat img = getMat(hwnd);;
 
+	int x = 155;
+	int y = 172;
+
+	Vec4f color = img.at<Vec4b>(y, x);
+
+	while (y < 639) {
+		color = img.at<Vec4b>(y, x);
+
+		if (color[0] == 49 && color[1] == 89 && color[2] == 100) {
+			y++;
+			color = img.at<Vec4b>(y, x);
+			if (color[0] == 49 && color[1] == 89 && color[2] == 100) {
+				y++;
+				color = img.at<Vec4b>(y, x);
+				if (color[0] != 49) {
+					std::cout << y << " : Found\n";
+					y++;
+				}
+			}
+		}
+		else {
+			y++;
+		}
+	}
+
+	return 0;
+
+	while (true) {
+		std::cout << heroUpgrade << " : Hero Upgrade\n\n\n\n\n";
+
+		img = getMat(hwnd);
+
+		heroY = findHero(hwnd, img, heroUpgrade);
+		if (heroY <= 0) {
+			std::cout << "Reset\n";
+			heroUpgrade = 1;
+			heroY = findHero(hwnd, img, heroUpgrade);
+		}
+		else {
+			std::cout << "Sucsess\n";
+		}
+		heroUpgrade++;
+
+		if (GetKeyState('V') & 0x8000) {
+			return 0;
+		}
+		while (GetKeyState('B') & 0x8000) {
+			waitKey(30);
+		}
+	}
+
+	// Main Loop
 	bool isOn = true;
 	while (isOn) {
 		img = getMat(hwnd);
@@ -715,7 +862,7 @@ int main() {
 			bodyCount += clickMonster(hwnd, img);
 		}
 
-		if (timer % 100 == 0) {
+		if (timer % 20 == 0) {
 			heroUpgrade++;
 		}
 		/*
@@ -745,7 +892,7 @@ int main() {
 		}
 
 		// Stop Button
-		for (int i = 0; i < 30; i++) {
+		for (int i = 0; i < 50; i++) {
 			if (GetKeyState('B') & 0x8000) {
 				isOn = false;
 			}
