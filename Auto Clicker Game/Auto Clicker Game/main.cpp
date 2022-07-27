@@ -319,8 +319,8 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	Vec4f goldAA4 = { 53, 111, 126, 0 };
 	Vec4f goldA4 = { 49, 89, 100, 0 };
 
-	//Vec4f normalAv = {}
-	Vec4f goldAv = {49, 89, 100, 0};
+	Vec4f av = {49, 89, 100, 0};
+	Vec4f un = { 24, 44, 49, 0 };
 
 
 	x = 155; 
@@ -464,12 +464,31 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		bool isAvailable;
 		y = 172;
 
-		while (y < 639) {
+		while (y < 638) {
 			//std::cout << current << "\n";
 
 			current = img.at<Vec4b>(y, x);
-
-			if (current == normalA) {
+			if (current == av) {
+				y++;
+				current = img.at<Vec4b>(y, x);
+				if (current == av) {
+					if (current == av) {
+						temp++;
+						bottom = y;
+						isAvailable = true;
+						std::cout << "Found New " << y << "\n";
+						y += yJump;
+					}
+					else {
+						y++;
+					}
+				}
+				else {
+					y += 2;
+				}
+			}
+			/*
+			else if (current == normalA) {
 				y++;
 				current = img.at<Vec4b>(y, x);
 				if (current == normal) {
@@ -788,7 +807,7 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 14;
+	int heroUpgrade = 5;
 	int heroY = 0;
 	int timer = 0;
 	int fail = 0;
@@ -801,28 +820,6 @@ int main() {
 	int y = 172;
 
 	Vec4f color = img.at<Vec4b>(y, x);
-
-	while (y < 639) {
-		color = img.at<Vec4b>(y, x);
-
-		if (color[0] == 49 && color[1] == 89 && color[2] == 100) {
-			y++;
-			color = img.at<Vec4b>(y, x);
-			if (color[0] == 49 && color[1] == 89 && color[2] == 100) {
-				y++;
-				color = img.at<Vec4b>(y, x);
-				if (color[0] != 49) {
-					std::cout << y << " : Found\n";
-					y++;
-				}
-			}
-		}
-		else {
-			y++;
-		}
-	}
-
-	return 0;
 
 	while (true) {
 		std::cout << heroUpgrade << " : Hero Upgrade\n\n\n\n\n";
