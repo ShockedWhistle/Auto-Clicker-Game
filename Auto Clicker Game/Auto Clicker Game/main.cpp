@@ -319,6 +319,9 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	Vec4f goldAA4 = { 53, 111, 126, 0 };
 	Vec4f goldA4 = { 49, 89, 100, 0 };
 
+	//Vec4f normalAv = {}
+	Vec4f goldAv = {49, 89, 100, 0};
+
 
 	x = 155; 
 	y = 172;
