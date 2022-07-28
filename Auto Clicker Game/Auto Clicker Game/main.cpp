@@ -328,8 +328,6 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 	Vec4f current;
 
-	int location;
-
 	int index = 0;
 
 	if (hero <= 4) {
@@ -451,19 +449,22 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	}
 	int prev = 0;
 	bool isClear = true;
+	bool isNew = false;
 	int yJump = 56;
 
-	int miss = 0;
+	//int miss = 0;
+	index = 4;
 
 	while (index != hero) {
 		img = getMat(hwnd);
 
-		int  temp = 0;
-		
+		int temp = 0;
+		int oldBot = 0;
 		int bottom = 0;
+		int second = 0;
 		bool isAvailable;
 		y = 172;
-
+		// 570
 		while (y < 638) {
 			//std::cout << current << "\n";
 
@@ -474,9 +475,10 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				if (current == av) {
 					if (current == av) {
 						temp++;
+						second = bottom;
 						bottom = y;
 						isAvailable = true;
-						std::cout << "Found New " << y << "\n";
+						std::cout << "Found New " << y << " Index : " << index << "\n";
 						y += yJump;
 					}
 					else {
@@ -593,18 +595,51 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			}
 			*/
 			else {
-				miss++;
+				//miss++;
 				y++;
 			}
 		}
-		std::cout << temp << " Pass\n";
 
-		//std::cout << "Done\n";
-
-		if (index == 0) {
-			index = 4;
-			//std::cout << "One time\n";
+		if (bottom < 570) {
+			std::cout << "Bottom is under 570\n";
+			isNew = true;
 		}
+		else if (isNew) {
+			index++;
+			isNew = false;
+			if (index == hero) {
+				std::cout << "4 Heros on screen.\n";
+				return bottom;
+			}
+		}
+		else if (temp == 5) {
+			index++;
+			isNew = false;
+			if (index == hero) {
+				std::cout << "5 Heros on screen.\n";
+				return second;
+			}
+		}
+		else if (temp == 4 && temp == prev) {
+			index++;
+			isNew = false;
+			if (index == hero) {
+				std::cout << "4 Heros Still on screen\n";
+				return bottom;
+			}
+		}
+		else if (oldBot >= 570) {
+			index++;
+			isNew = false;
+			if (index == hero) {
+				std::cout << "New Hero despite weirdness.\n";
+				return bottom;
+			}
+		}
+
+		//if()
+
+		/*
 
 		if (temp == 4 && prev == 5) {
 			index++;
@@ -647,7 +682,10 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			return -1;
 		}
 
+		*/
+
 		prev = temp;
+		oldBot = bottom;
 
 		SetCursorPos(548 + gameRect.left, 622 + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, 548 + gameRect.left, 622 + gameRect.top + 30, 0, 0);
@@ -656,7 +694,8 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		waitKey(wait);
 		waitKey(wait);
 		waitKey(wait);
-		std::cout << "Scrool\n\n";
+		std::cout << "Scrool\n\n\n";
+
 	}
 
 	return -1;
