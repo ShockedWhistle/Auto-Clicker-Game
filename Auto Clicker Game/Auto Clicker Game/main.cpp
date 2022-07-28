@@ -271,9 +271,6 @@ int upgradeHero(HWND hwnd, Mat img, int y) {
 }
 
 int findHero(HWND hwnd, Mat img, int hero) {
-	// X : 155 down 48
-// Up : 548, 188 Down : 548, 626
-
 	int x = 548;
 	int y = 240;
 	int wait = 80;
@@ -297,28 +294,6 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	
 	img = getMat(hwnd);
 
-	// Sets pixel color values
-	Vec4f normalA = { 165, 225, 235, 0 };
-	Vec4f normal = { 176, 237, 247, 0 };
-
-	Vec4f normalAU = { 35, 58, 64, 0 };
-	Vec4f normalU = { 24, 44, 49, 0 };
-
-	Vec4f goldA = { 60, 102, 113, 0 };
-	Vec4f gold = { 49, 89, 100, 0 };
-
-	Vec4f goldAU = { 38, 108, 125, 0 };
-	Vec4f goldU = { 28, 77, 88, 0 };
-
-	Vec4f goldAA3 = { 58, 112, 126, 0 };
-	Vec4f goldA3 = { 49, 89, 100, 0 };
-
-	Vec4f goldAU2 = { 29, 50, 56, 0 };
-	Vec4f goldU2 = { 24, 44, 49, 0 };
-
-	Vec4f goldAA4 = { 53, 111, 126, 0 };
-	Vec4f goldA4 = { 49, 89, 100, 0 };
-
 	Vec4f av = {49, 89, 100, 0};
 	Vec4f un = { 24, 44, 49, 0 };
 
@@ -329,118 +304,31 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	Vec4f current;
 
 	int index = 0;
+	int yJump = 100;
 
 	if (hero <= 4) {
 		while (y <= 592) {
-			//std::cout << current << "\n";
-
 			current = img.at<Vec4b>(y, x);
-
-			if (current == normalA) {
+			if (current == av || current == un) {
 				y++;
 				current = img.at<Vec4b>(y, x);
-				if (current == normal) {
-					index++;
-					std::cout << "Found " << y << "\n";
-					if (index == hero) {
-						return y;
-						return upgradeHero(hwnd, img, y);
+				if (current == av || current == un) {
+					if (current == av || current == un) {
+						std::cout << "Found New " << y << " Index : " << index << "\n";
+						index++;
+						if (index == hero) {
+							return y;
+						}
+						y += yJump;
 					}
-					y += 60;
-
+					else {
+						y++;
+					}
+				}
+				else {
+					y += 2;
 				}
 			}
-			else if (current == goldA) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == gold) {
-					index++;
-					std::cout << "Found " << y << "\n";
-					if (index == hero) {
-						return y;
-						return upgradeHero(hwnd, img, y);
-					}
-					y += 60;
-				}
-			}
-			else if (current == normalAU) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == normalU) {
-					index++;
-					std::cout << "Found " << y << "\n";
-					if (index == hero) {
-						return y;
-						return -1;
-					}
-					y += 60;
-
-				}
-			}
-			else if (current == goldAU) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == goldU) {
-					index++;
-					std::cout << "Found " << y << "\n";
-					if (index == hero) {
-						return y;
-						return -1;
-					}
-					y += 60;
-				}
-			}
-			else if (current == goldAU2) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == goldU2) {
-					index++;
-					std::cout << "Found " << y << "\n";
-					if (index == hero) {
-						return y;
-						return -1;
-					}
-					y += 60;
-				}
-			}
-			else if (current == goldAA3) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == goldA3) {
-					index++;
-					std::cout << "Found " << y << "\n";
-					if (index == hero) {
-						return y;
-					}
-					y += 60;
-				}
-			}
-			else if (current == goldAA4) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == goldA4) {
-					index++;
-					std::cout << "Found " << y << "\n";
-					if (index == hero) {
-						return y;
-					}
-					y += 60;
-				}
-			}
-			/*
-			else if (goldA[0] - 10 <= current[0] <= goldA[0] + 10 && goldA[1] - 2 <= current[1] <= goldA[1] + 2 && goldA[2] - 10 <= current[2] <= goldA[2] + 10) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (gold[0] - 10 <= current[0] <= gold[0] + 10 && gold[1] - 10 <= current[1] <= gold[1] + 10) {
-					index++;
-					std::cout << "\n\n\nFound Net " << y << "\n\n\n";
-					if (index == hero) {
-						return y;
-					}
-					y += 60;
-				}
-			}
-			*/
 			else {
 				y++;
 			}
@@ -448,11 +336,8 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		return -1;
 	}
 	int prev = 0;
-	bool isClear = true;
 	bool isNew = false;
-	int yJump = 100;
 
-	//int miss = 0;
 	index = 4;
 
 	while (index != hero) {
@@ -462,22 +347,17 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		int oldBot = 640;
 		int bottom = 0;
 		int second = 0;
-		bool isAvailable;
 		y = 172;
-		// 570
 		while (y < 637) {
-			//std::cout << current << "\n";
-
 			current = img.at<Vec4b>(y, x);
-			if (current == av) {
+			if (current == av || current == un) {
 				y++;
 				current = img.at<Vec4b>(y, x);
-				if (current == av) {
-					if (current == av) {
+				if (current == av || current == un) {
+					if (current == av || current == un) {
 						temp++;
 						second = bottom;
 						bottom = y;
-						isAvailable = true;
 						std::cout << "Found New " << y << " Index : " << index << "\n";
 						y += yJump;
 					}
@@ -489,113 +369,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 					y += 2;
 				}
 			}
-			/*
-			else if (current == normalA) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == normal) {
-					temp++;
-					bottom = y;
-					isAvailable = true;
-					std::cout << "Found " << y << "\n";
-					y += yJump;
-					std::cout << miss << " : Misses\n\n\n";
-					miss = 0;
-				}
-			}
-			else if (current == goldA) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == gold) {
-					temp++;
-					bottom = y;
-					isAvailable = true;
-					std::cout << "Found " << y << "\n";
-					y += yJump;
-					std::cout << miss << " : Misses\n\n\n";
-					miss = 0;
-				}
-			}
-			else if (current == normalAU) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == normalU) {
-					temp++;
-					bottom = y;
-					isAvailable = false;
-					std::cout << "Found " << y << "\n";
-					y += yJump;
-					std::cout << miss << " : Misses\n\n\n";
-					miss = 0;
-				}
-			}
-			else if (current == goldAU) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == goldU) {
-					temp++;
-					bottom = y;
-					isAvailable = false;
-					std::cout << "Found " << y << "\n";
-					y += yJump;
-					std::cout << miss << " : Misses\n\n\n";
-					miss = 0;
-				}
-			}
-			else if (current == goldAU2) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == goldU2) {
-					temp++;
-					bottom = y;
-					isAvailable = false;
-					std::cout << "Found " << y << "\n";
-					y += yJump;
-					std::cout << miss << " : Misses\n\n\n";
-					miss = 0;
-				}
-			}
-			else if (current == goldAA3) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == goldA3) {
-					temp++;
-					bottom = y;
-					isAvailable = true;
-					std::cout << "Found " << y << "\n";
-					y += yJump;
-					std::cout << miss << " : Misses\n\n\n";
-					miss = 0;
-				}
-			}
-			else if (current == goldAA4) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == goldA4) {
-					temp++;
-					bottom = y;
-					isAvailable = true;
-					std::cout << "Found " << y << "\n";
-					y += yJump;
-					std::cout << miss << " : Misses\n\n\n";
-					miss = 0;
-				}
-			}
-			/*
-			else if (current == gold) {
-				y++;
-				current = img.at<Vec4b>(y, x);
-				if (current == gold) {
-					temp++;
-					bottom = y;
-					isAvailable = true;
-					std::cout << "\n\n\nFound Net " << y << "\n\n\n";
-					y += 60;
-				}
-			}
-			*/
 			else {
-				//miss++;
 				y++;
 			}
 		}
@@ -633,58 +407,10 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			}
 		}
 	
-
 		if (bottom > 590) {
 			std::cout << "Bottom is above 590\n";
 			isNew = true;
 		}
-
-		//if()
-
-		/*
-
-		if (temp == 4 && prev == 5) {
-			index++;
-			isClear = true;
-			std::cout << "++ : " << bottom << "\n";
-			if (index == hero) {
-				// y == hero position
-				if (isAvailable) {
-					return bottom;
-					return upgradeHero(hwnd, img, bottom);
-				}
-				else {
-					return bottom;
-					return -1;
-				}
-			}
-		}
-		else if (temp == 4 && prev == 4 && isClear) {
-			index++;
-			isClear = false;
-			std::cout << "++ : " << bottom << "\n";
-			if (index == hero) {
-				// y == hero position
-				if (isAvailable) {
-					return bottom;
-					return upgradeHero(hwnd, img, bottom);
-				}
-				else {
-					return bottom;
-					return -1;
-				}
-			}
-			isClear = false;
-		}
-
-		if (temp == 5) {
-			isClear = true;
-		}
-		else if (temp == 3) {
-			return -1;
-		}
-
-		*/
 
 		prev = temp;
 		oldBot = bottom;
@@ -850,7 +576,7 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 28;
+	int heroUpgrade = 3;
 	int heroY = 0;
 	int timer = 0;
 	int fail = 0;
