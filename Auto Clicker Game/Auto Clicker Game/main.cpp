@@ -459,7 +459,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		img = getMat(hwnd);
 
 		int temp = 0;
-		int oldBot = 0;
+		int oldBot = 640;
 		int bottom = 0;
 		int second = 0;
 		bool isAvailable;
@@ -469,28 +469,24 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			//std::cout << current << "\n";
 
 			current = img.at<Vec4b>(y, x);
-			if (current != av) {
+			if (current == av) {
 				y++;
 				current = img.at<Vec4b>(y, x);
 				if (current == av) {
-					y++;
-					current = img.at<Vec4b>(y, x);
 					if (current == av) {
-						if (current == av) {
-							temp++;
-							second = bottom;
-							bottom = y;
-							isAvailable = true;
-							std::cout << "Found New " << y << " Index : " << index << "\n";
-							y += yJump;
-						}
-						else {
-							y++;
-						}
+						temp++;
+						second = bottom;
+						bottom = y;
+						isAvailable = true;
+						std::cout << "Found New " << y << " Index : " << index << "\n";
+						y += yJump;
 					}
 					else {
-						y += 2;
+						y++;
 					}
+				}
+				else {
+					y += 2;
 				}
 			}
 			/*
@@ -604,36 +600,33 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			}
 		}
 
-		if (!isNew) {
-			std::cout << "Is new is False\n";
-		}
-		else if (temp == prev) {
+		if (isNew && bottom <= 580) {
 			index++;
 			isNew = false;
+			std::cout << "Is New and bottom >= 580.\n";
 			if (index == hero) {
-				std::cout << "4 Heros Still on screen\n";
 				return bottom;
 			}
 		}
-		else if (oldBot <= 560) {
+		else if (isNew && bottom > 580) {
 			index++;
 			isNew = false;
+			std::cout << "Is New and bottom >= 580.\n";
 			if (index == hero) {
-				std::cout << "New Hero despite weirdness.\n";
-				return bottom;
+				return second;
 			}
 		}
-		else{
+		else if (bottom <= 580 && prev == 4) {
 			index++;
 			isNew = false;
+			std::cout << "Bottom and Old Bottom >= 580.\n";
 			if (index == hero) {
-				std::cout << "Is New and New Hero.\n";
 				return bottom;
 			}
 		}
 
-		if (bottom > 560) {
-			std::cout << "Bottom is under 570\n";
+		if (bottom > 580) {
+			std::cout << "Bottom is above 580\n";
 			isNew = true;
 		}
 
@@ -694,8 +687,10 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		waitKey(wait);
 		waitKey(wait);
 		waitKey(wait);
-		std::cout << "Scrool\n\n\n";
-
+		std::cout << index << " : Scrool\n\n\n";
+		if (GetKeyState('B') & 0x8000) {
+			return 0;
+		}
 	}
 
 	return -1;
@@ -846,7 +841,7 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 5;
+	int heroUpgrade = 24;
 	int heroY = 0;
 	int timer = 0;
 	int fail = 0;
