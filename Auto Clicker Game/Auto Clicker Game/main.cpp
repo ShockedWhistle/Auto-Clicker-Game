@@ -576,25 +576,14 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 3;
+	int heroUpgrade = 1;
 	int heroY = 0;
 	int timer = 0;
 	int fail = 0;
 	Mat temp = getMat(hwnd);
 
 	std::cout << "Find Hero : " << heroUpgrade << "\n";
-	Mat img = getMat(hwnd);;
-
-	int x = 155;
-	int y = 172;
-
-	Vec4f color = img.at<Vec4b>(y, x);
-
-	heroY = findHero(hwnd, img, heroUpgrade);
-
-	SetCursorPos(155 + gameRect.left, heroY + gameRect.top + 30);
-
-	return 0;
+	Mat img;
 
 	// Main Loop
 	bool isOn = true;
