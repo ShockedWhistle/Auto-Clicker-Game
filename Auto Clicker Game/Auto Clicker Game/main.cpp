@@ -465,28 +465,32 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		bool isAvailable;
 		y = 172;
 		// 570
-		while (y < 638) {
+		while (y < 637) {
 			//std::cout << current << "\n";
 
 			current = img.at<Vec4b>(y, x);
-			if (current == av) {
+			if (current != av) {
 				y++;
 				current = img.at<Vec4b>(y, x);
 				if (current == av) {
+					y++;
+					current = img.at<Vec4b>(y, x);
 					if (current == av) {
-						temp++;
-						second = bottom;
-						bottom = y;
-						isAvailable = true;
-						std::cout << "Found New " << y << " Index : " << index << "\n";
-						y += yJump;
+						if (current == av) {
+							temp++;
+							second = bottom;
+							bottom = y;
+							isAvailable = true;
+							std::cout << "Found New " << y << " Index : " << index << "\n";
+							y += yJump;
+						}
+						else {
+							y++;
+						}
 					}
 					else {
-						y++;
+						y += 2;
 					}
-				}
-				else {
-					y += 2;
 				}
 			}
 			/*
@@ -600,27 +604,10 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			}
 		}
 
-		if (bottom < 570) {
-			std::cout << "Bottom is under 570\n";
-			isNew = true;
+		if (!isNew) {
+			std::cout << "Is new is False\n";
 		}
-		else if (isNew) {
-			index++;
-			isNew = false;
-			if (index == hero) {
-				std::cout << "4 Heros on screen.\n";
-				return bottom;
-			}
-		}
-		else if (temp == 5) {
-			index++;
-			isNew = false;
-			if (index == hero) {
-				std::cout << "5 Heros on screen.\n";
-				return second;
-			}
-		}
-		else if (temp == 4 && temp == prev) {
+		else if (temp == prev) {
 			index++;
 			isNew = false;
 			if (index == hero) {
@@ -628,13 +615,26 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				return bottom;
 			}
 		}
-		else if (oldBot >= 570) {
+		else if (oldBot <= 560) {
 			index++;
 			isNew = false;
 			if (index == hero) {
 				std::cout << "New Hero despite weirdness.\n";
 				return bottom;
 			}
+		}
+		else{
+			index++;
+			isNew = false;
+			if (index == hero) {
+				std::cout << "Is New and New Hero.\n";
+				return bottom;
+			}
+		}
+
+		if (bottom > 560) {
+			std::cout << "Bottom is under 570\n";
+			isNew = true;
 		}
 
 		//if()
@@ -859,6 +859,10 @@ int main() {
 	int y = 172;
 
 	Vec4f color = img.at<Vec4b>(y, x);
+
+	heroY = findHero(hwnd, img, heroUpgrade);
+
+	return 0;
 
 	while (true) {
 		std::cout << heroUpgrade << " : Hero Upgrade\n\n\n\n\n";
