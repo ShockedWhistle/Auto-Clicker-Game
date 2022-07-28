@@ -450,7 +450,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 	int prev = 0;
 	bool isClear = true;
 	bool isNew = false;
-	int yJump = 56;
+	int yJump = 100;
 
 	//int miss = 0;
 	index = 4;
@@ -600,33 +600,42 @@ int findHero(HWND hwnd, Mat img, int hero) {
 			}
 		}
 
-		if (isNew && bottom <= 580) {
+		if (isNew && bottom <= 590) {
 			index++;
 			isNew = false;
-			std::cout << "Is New and bottom >= 580.\n";
+			std::cout << "Is New and bottom >= 590.\n";
 			if (index == hero) {
 				return bottom;
 			}
 		}
-		else if (isNew && bottom > 580) {
+		else if (bottom <= 590 && prev == 4) {
 			index++;
 			isNew = false;
-			std::cout << "Is New and bottom >= 580.\n";
+			std::cout << "Bottom and Old Bottom >= 590.\n";
+			if (index == hero) {
+				return bottom;
+			}
+		}
+		else if (isNew && bottom > 590) {
+			index++;
+			isNew = false;
+			std::cout << "Is New and bottom >= 590.\n";
 			if (index == hero) {
 				return second;
 			}
 		}
-		else if (bottom <= 580 && prev == 4) {
+		else if (index == 21 && oldBot < bottom < 590) {
 			index++;
 			isNew = false;
-			std::cout << "Bottom and Old Bottom >= 580.\n";
+			std::cout << "Given up.\n";
 			if (index == hero) {
 				return bottom;
 			}
 		}
+	
 
-		if (bottom > 580) {
-			std::cout << "Bottom is above 580\n";
+		if (bottom > 590) {
+			std::cout << "Bottom is above 590\n";
 			isNew = true;
 		}
 
@@ -679,6 +688,9 @@ int findHero(HWND hwnd, Mat img, int hero) {
 
 		prev = temp;
 		oldBot = bottom;
+		if (GetKeyState('B') & 0x8000) {
+			return 0;
+		}
 
 		SetCursorPos(548 + gameRect.left, 622 + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, 548 + gameRect.left, 622 + gameRect.top + 30, 0, 0);
@@ -688,9 +700,6 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		waitKey(wait);
 		waitKey(wait);
 		std::cout << index << " : Scrool\n\n\n";
-		if (GetKeyState('B') & 0x8000) {
-			return 0;
-		}
 	}
 
 	return -1;
@@ -841,7 +850,7 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 24;
+	int heroUpgrade = 28;
 	int heroY = 0;
 	int timer = 0;
 	int fail = 0;
@@ -857,31 +866,9 @@ int main() {
 
 	heroY = findHero(hwnd, img, heroUpgrade);
 
+	SetCursorPos(155 + gameRect.left, heroY + gameRect.top + 30);
+
 	return 0;
-
-	while (true) {
-		std::cout << heroUpgrade << " : Hero Upgrade\n\n\n\n\n";
-
-		img = getMat(hwnd);
-
-		heroY = findHero(hwnd, img, heroUpgrade);
-		if (heroY <= 0) {
-			std::cout << "Reset\n";
-			heroUpgrade = 1;
-			heroY = findHero(hwnd, img, heroUpgrade);
-		}
-		else {
-			std::cout << "Sucsess\n";
-		}
-		heroUpgrade++;
-
-		if (GetKeyState('V') & 0x8000) {
-			return 0;
-		}
-		while (GetKeyState('B') & 0x8000) {
-			waitKey(30);
-		}
-	}
 
 	// Main Loop
 	bool isOn = true;
