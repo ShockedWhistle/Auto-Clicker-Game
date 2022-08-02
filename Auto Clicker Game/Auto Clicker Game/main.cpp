@@ -464,7 +464,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 						temp++;
 						second = bottom;
 						bottom = y;
-						std::cout << "Found New " << y << " Index : " << index << "\n";
+						//std::cout << "Found New " << y << " Index : " << index << "\n";
 						y += yJump;
 					}
 					else {
@@ -687,7 +687,7 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 0;
+	int heroUpgrade = 10;
 	int heroY = 0;
 	int timer = 0;
 	int fail = 0;
