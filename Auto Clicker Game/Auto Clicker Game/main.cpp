@@ -269,15 +269,15 @@ int clickMonsterFish(HWND hwnd, Mat img) {
 }
 
 int clickMonster(HWND hwnd, Mat img) {
-	int curX = 788;
-	int curY = 378;
+	int curX = 1000;
+	int curY = 400;
 	int wait = 80;
 	Vec4f rgba = img.at<Vec4b>(550, 787);
 	int bodyCount = 0;
 
 	// Top Left
 	int timer = 0;
-	while (timer < 100) {
+	while (timer < 100 && bodyCount < 1) {
 		img = getMat(hwnd);
 		if (monsterDeath(img, rgba)) {
 			bodyCount++;
@@ -299,29 +299,43 @@ int clickMonster(HWND hwnd, Mat img) {
 }
 
 int upgradeHero(HWND hwnd, Mat img, int y) {
+	img = getMat(hwnd);
 	int x = 155;
-	y -= 2;
-	std::cout << "Upgrade At : " << y << std::endl;
+	y -= 1;
 
-	int wait = 2;
+	int wait = 4;
 	int upgrade = 0;
-	Vec4f available = { 255, 197, 115, 0 };
-	Vec4f available2 = { 254, 250, 224, 0 };
 	Vec4f av = { 49, 89, 100, 0 };
-	SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
-	waitKey(wait);
-	waitKey(wait);
 	waitKey(wait);
 	Vec4f current = img.at<Vec4b>(y, x);
 
 	std::cout << current << "\n";
-	while (current == av) {
+	if (current != av) {
+		for (int i = 0; i < 100; i++) {
+			current = img.at<Vec4b>(y-i, x);
+			if (current == av) {
+				i = 100;
+				break;
+			}
+		}
+		if (current != av) {
+			y += 100;
+			for (int i = 0; i < 30; i++) {
+				current = img.at<Vec4b>(y + i, x);
+				if (current == av) {
+					break;
+				}
+			}
+		}
+	}
+
+	while (current == av) { // av[0] - 5 <= current[0] <= av[0] + 5 || av2[0] - 5 <= current[0] <= av2[0] + 5 || av3[0] - 5 <= current[0] <= av3[0] + 5 || current[0] <= av4[0] + 5 || av5[0] - 5 <= current[0] <= av5[0] + 5 || av6[0] - 5 <= current[0] <= av6[0] + 5
 		upgrade++;
 		SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+		//SetCursorPos(x + 100 + gameRect.left, y + gameRect.top + 30);
 		waitKey(wait);
-
 		img = getMat(hwnd);
 		current = img.at<Vec4b>(y, x);
 	}
@@ -335,7 +349,7 @@ void buyAbility(int y, int hero) {
 	int xJump = 36;
 	int wait = 2;
 
-	if (hero != 20) {
+	if (hero != 19) {
 		for (int i = 0; i < 7; i++) {
 			SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 			mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
@@ -352,6 +366,11 @@ void buyAbility(int y, int hero) {
 			waitKey(wait);
 			x += xJump;
 		}
+		x = 900;
+		y = 110;
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 	}
 	return;
 }
@@ -493,7 +512,12 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				return bottom;
 			}
 		}
-	
+		
+		if (temp <= 4 && bottom <= 476) {
+			std::cout << "Bottom is above 590\n";
+			return 0;
+		}
+
 		if (bottom > 590) {
 			std::cout << "Bottom is above 590\n";
 			isNew = true;
@@ -678,18 +702,33 @@ int main() {
 	bool isProgressing;
 	isProgressing = false;
 	while (isOn) {
+		buyAbility(heroY, heroUpgrade);
 		heroUpgrade++;
 		heroY = findHero(hwnd, img, heroUpgrade);
 		if (heroY <= 0) {
 			heroUpgrade = 1;
 			heroY = findHero(hwnd, img, heroUpgrade);
 		}
-		buyAbility(heroY, heroUpgrade);
-		upgradeHero(hwnd, img, heroY);
-
-
 		img = getMat(hwnd);
-		bodyCount += clickMonster(hwnd, img);
+		buyAbility(heroY, heroUpgrade);
+
+		if (upgradeHero(hwnd, img, heroY) > 100) {
+			buyAbility(heroY, heroUpgrade);
+			heroUpgrade++;
+			heroY = findHero(hwnd, img, heroUpgrade);
+			if (heroY <= 0) {
+				heroUpgrade = 1;
+				heroY = findHero(hwnd, img, heroUpgrade);
+			}
+			img = getMat(hwnd);
+			buyAbility(heroY, heroUpgrade);
+		}
+		else {
+			bodyCount += clickMonster(hwnd, img);
+
+		}
+
+
 		checkAbility(img);
 
 		// Level stuff
