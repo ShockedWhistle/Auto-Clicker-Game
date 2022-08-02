@@ -69,6 +69,33 @@ void prevLevel() {
 	mouse_event(MOUSEEVENTF_LEFTUP, 786 + gameRect.left, 42 + gameRect.top + 30, 0, 0);
 }
 
+void ascend() {
+	int x = 1114;
+	int y = 246;
+	SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+	waitKey(20);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+}
+
+bool toggleProgresssion(HWND hwnd) {
+	int x = 1114;
+	int y = 200;
+
+	SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+	waitKey(20);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+
+	Mat img = getMat(hwnd);
+	Vec4f color = img.at<Vec4b>(y, x);
+
+	if (color[0] == 0 && color[1] == 0 && color[3] == 255) {
+		return false;
+	}
+	return true;
+}
+
 bool monsterDeath(Mat img, Vec4f previous) {
 	//787, 582
 	Vec4f rgba = img.at<Vec4b>(550, 787); // 550, 787  :  60, 60. 61, 255 
@@ -241,7 +268,6 @@ int clickMonster(HWND hwnd, Mat img) {
 }
 
 int upgradeHero(HWND hwnd, Mat img, int y) {
-
 	int x = 50;
 	y += 20;
 	std::cout << "Upgrade At : " << y << std::endl;
@@ -268,6 +294,33 @@ int upgradeHero(HWND hwnd, Mat img, int y) {
 	}
 	
 	return upgrade;
+}
+
+void buyAbility(int y, int hero) {
+	y += 36;
+	int x = 190; // 36 apart 7 max
+	int xJump = 36;
+	int wait = 30;
+
+	if (hero != 20) {
+		for (int i = 0; i < 7; i++) {
+			SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
+			mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+			waitKey(wait);
+			x += xJump;
+		}
+	}
+	else {
+		for (int i = 0; i < 3; i++) {
+			SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
+			mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+			mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+			waitKey(wait);
+			x += xJump;
+		}
+	}
+	return;
 }
 
 int findHero(HWND hwnd, Mat img, int hero) {
@@ -583,37 +636,36 @@ int main() {
 	Mat temp = getMat(hwnd);
 
 	std::cout << "Find Hero : " << heroUpgrade << "\n";
-	Mat img;
+	Mat img = getMat(hwnd);
 
 	// Main Loop
 	bool isOn = true;
+	bool isProgressing = false;
 	while (isOn) {
 		img = getMat(hwnd);
 
 		checkAbility(img);
 
 		if (timer % 10 == 0) {
+			upgradeHero(hwnd, img, heroY);
+			bodyCount += clickMonster(hwnd, img);
+		}
+
+		if (timer % 100 == 0) {
+			heroUpgrade++;
 			heroY = findHero(hwnd, img, heroUpgrade);
 			if (heroY <= 0) {
 				heroUpgrade = 1;
 				heroY = findHero(hwnd, img, heroUpgrade);
 			}
-
-			bodyCount += clickMonster(hwnd, img);
 		}
 
-		if (timer % 20 == 0) {
-			heroUpgrade++;
+		// Level stuff
+		if (!isProgressing && timer % 500 = 0) {
+			toggleProgresssion(hwnd);
 		}
-		/*
-		if (timer % 1000 == 0) {
-			findFish();
-		}
-		*/
 
-		upgradeHero(hwnd, img, heroY);
-
-		if (bodyCount >= killsNeeded) {
+		if (bodyCount >= killsNeeded && !isProgressing) {
 			nextLevel();
 			bodyCount = 0;
 			if (checkBoss(hwnd, img)) {
@@ -641,8 +693,15 @@ int main() {
 			}
 		}
 
-		timer++;
+		// Timer
+		if (timer == 999) {
+			timer = 1;
+		}
+		else {
+			timer++;
+		}
 	}
+
 
 	std::cout << "Done\n";
 
