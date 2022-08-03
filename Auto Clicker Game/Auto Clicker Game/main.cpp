@@ -504,7 +504,15 @@ int findHero(HWND hwnd, Mat img, int hero) {
 				return second;
 			}
 		}
-		else if (index == 21 && oldBot < bottom < 590) {
+		else if (index == 20 && oldBot < bottom < 590) {
+			index++;
+			isNew = false;
+			std::cout << "Given up.\n";
+			if (index == hero) {
+				return bottom;
+			}
+		}
+		else if (index == 12) {
 			index++;
 			isNew = false;
 			std::cout << "Given up.\n";
@@ -687,7 +695,7 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 10;
+	int heroUpgrade = 0;
 	int heroY = 0;
 	int timer = 0;
 	int fail = 0;
