@@ -76,9 +76,16 @@ void ascend() {
 	waitKey(20);
 	mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 	mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+
+	x = 490;
+	y = 480;
+	SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+	waitKey(20);
+	mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+	mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 }
 
-bool toggleProgresssion(HWND hwnd) {
+void turnOnProgresssion(HWND hwnd) {
 	int x = 1114;
 	int y = 200;
 
@@ -91,9 +98,11 @@ bool toggleProgresssion(HWND hwnd) {
 	Vec4f color = img.at<Vec4b>(y, x);
 
 	if (color[0] == 0 && color[1] == 0 && color[3] == 255) {
-		return false;
+		SetCursorPos(x + gameRect.left, y + gameRect.top + 30); // Start
+		waitKey(20);
+		mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
+		mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 	}
-	return true;
 }
 
 bool monsterDeath(Mat img, Vec4f previous) {
@@ -282,11 +291,11 @@ int clickMonster(HWND hwnd, Mat img) {
 		if (monsterDeath(img, rgba)) {
 			bodyCount++;
 		}
+		waitKey(wait);
 		rgba = img.at<Vec4b>(550, 787);
 		SetCursorPos(curX + gameRect.left, curY + gameRect.top); // Start
 		mouse_event(MOUSEEVENTF_LEFTDOWN, curX + gameRect.left, curY + gameRect.top + 30, 0, 0);
 		mouse_event(MOUSEEVENTF_LEFTUP, curX + gameRect.left, curY + gameRect.top + 30, 0, 0);
-		waitKey(wait);
 		img = getMat(hwnd);
 		if (monsterDeath(img, rgba)) {
 			bodyCount++;
@@ -349,7 +358,7 @@ void buyAbility(int y, int hero) {
 	int xJump = 36;
 	int wait = 2;
 
-	if (hero != 19) {
+	if (hero != 20) {
 		for (int i = 0; i < 7; i++) {
 			SetCursorPos(x + gameRect.left, y + gameRect.top + 30);
 			mouse_event(MOUSEEVENTF_LEFTDOWN, x + gameRect.left, y + gameRect.top + 30, 0, 0);
@@ -544,7 +553,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		waitKey(wait);
 		waitKey(wait);
 		waitKey(wait);
-		std::cout << index << " : Scrool\n\n\n";
+		//std::cout << index << " : Scrool\n\n\n";
 	}
 
 	return -1;
@@ -695,7 +704,8 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 0;
+	int heroUpgrade = 10;
+	int upgrades = 0;
 	int heroY = 0;
 	int timer = 0;
 	int fail = 0;
@@ -704,46 +714,55 @@ int main() {
 	std::cout << "Find Hero : " << heroUpgrade << "\n";
 	Mat img = getMat(hwnd);
 
+	int x = 1114;
+	int y = 200;
+	Vec4f color = img.at<Vec4b>(y, x);
+	if (color[0] == 0 && color[1] == 0 && color[3] == 255) {
+		turnOnProgresssion(hwnd);
+	}
+	ascend();
 	// Main Loop
 	bool isOn;
 	isOn = true;
-	bool isProgressing;
-	isProgressing = false;
+	bool isProgressing = true;
 	while (isOn) {
-		buyAbility(heroY, heroUpgrade);
 		heroUpgrade++;
 		heroY = findHero(hwnd, img, heroUpgrade);
 		if (heroY <= 0) {
+			std::cout << "Levels : " << upgrades << "\n";
+			if (heroUpgrade >= 20 && upgrades < 100) {
+				ascend();
+				heroUpgrade = 0;
+				bodyCount = 0;
+				timer = 0;
+				upgrades = 0;
+				isProgressing = false;
+			}
 			heroUpgrade = 1;
 			heroY = findHero(hwnd, img, heroUpgrade);
 		}
 		img = getMat(hwnd);
 		buyAbility(heroY, heroUpgrade);
 
-		if (upgradeHero(hwnd, img, heroY) > 100) {
-			buyAbility(heroY, heroUpgrade);
-			heroUpgrade++;
-			heroY = findHero(hwnd, img, heroUpgrade);
-			if (heroY <= 0) {
-				heroUpgrade = 1;
-				heroY = findHero(hwnd, img, heroUpgrade);
-			}
-			img = getMat(hwnd);
-			buyAbility(heroY, heroUpgrade);
-		}
-		else {
-			bodyCount += clickMonster(hwnd, img);
-
-		}
+		upgrades += upgradeHero(hwnd, img, heroY);
+		buyAbility(heroY, heroUpgrade);
+		bodyCount += clickMonster(hwnd, img);
 
 
 		checkAbility(img);
 
 		// Level stuff
-		if (!isProgressing && timer % 500 == 0) {
-			toggleProgresssion(hwnd);
+		color = img.at<Vec4b>(y, x);
+		if (color[0] == 0 && color[1] == 0 && color[3] == 255) {
+			bodyCount = 0;
+			isProgressing = false;
+		}
+		if (!isProgressing && bodyCount >= 10) {
+			bodyCount = 0;
+			turnOnProgresssion(hwnd);
 		}
 
+		/*
 		if (bodyCount >= killsNeeded && !isProgressing) {
 			nextLevel();
 			bodyCount = 0;
@@ -761,6 +780,7 @@ int main() {
 				}
 			}
 		}
+		*/
 
 		// Stop Button
 		for (int i = 0; i < 50; i++) {
