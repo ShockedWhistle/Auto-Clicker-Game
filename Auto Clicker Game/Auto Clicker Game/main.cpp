@@ -286,7 +286,7 @@ int clickMonster(HWND hwnd, Mat img) {
 
 	// Top Left
 	int timer = 0;
-	while (timer < 100 && bodyCount < 1) {
+	while (timer < 100 && bodyCount < 4) {
 		img = getMat(hwnd);
 		if (monsterDeath(img, rgba)) {
 			bodyCount++;
@@ -463,7 +463,7 @@ int findHero(HWND hwnd, Mat img, int hero) {
 		int bottom = 0;
 		int second = 0;
 		y = 172;
-		while (y < 637) {
+		while (y < 636) {
 			current = img.at<Vec4b>(y, x);
 			if (current == av || current == un) {
 				y++;
@@ -704,7 +704,7 @@ int main() {
 
 	int bodyCount = 0;
 	int killsNeeded = 10;
-	int heroUpgrade = 10;
+	int heroUpgrade = 9;
 	int upgrades = 0;
 	int heroY = 0;
 	int timer = 0;
@@ -717,10 +717,7 @@ int main() {
 	int x = 1114;
 	int y = 200;
 	Vec4f color = img.at<Vec4b>(y, x);
-	if (color[0] == 0 && color[1] == 0 && color[3] == 255) {
-		turnOnProgresssion(hwnd);
-	}
-	ascend();
+	turnOnProgresssion(hwnd);
 	// Main Loop
 	bool isOn;
 	isOn = true;
