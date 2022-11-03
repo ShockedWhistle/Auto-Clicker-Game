@@ -1,8 +1,10 @@
 #include <iostream>
+#include <fstream>
+#include <string>
+#include <Windows.h>
 #include <opencv2/imgcodecs.hpp>
 #include <opencv2/highgui.hpp>
 #include <opencv2/imgproc.hpp>
-#include <Windows.h>
 
 using namespace cv;
 
@@ -688,8 +690,34 @@ void findFish() {
 	mouse_event(MOUSEEVENTF_LEFTUP, x + gameRect.left, y + gameRect.top + 30, 0, 0);
 }
 
+std::string getAsset() {
+	std::string fileName = "save.txt";
+	std::ifstream inFile;
+	inFile.open(fileName);
+	std::string line;
+	std::string contents;
+	if (inFile.is_open()) { // .isopen(): Checks if file is open returns boolean
+		std::cout << fileName << " is Open\n";
+		while (getline(inFile, line)) {
+			contents = line;
+		}
+	}
+	else if (inFile.fail()) { // .fail(): Checks if file opining has failed returns boolean
+		std::cout << "Fail\n";
+	}
+
+	inFile.close(); // .close(): Cloes the file
+	std::cout << contents;
+	if (contents == "") {
+		std::cout << "Enter asset file: ";
+		std::cin >> contents;
+	}
+	return contents;
+}
+
 int main() {
 	LPCWSTR windowTitle = L"Clicker Heroes";
+	std::string assetS = getAsset();
 
 	HWND hwnd = FindWindow(NULL, windowTitle);
 	SetForegroundWindow(hwnd);

@@ -20,7 +20,7 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <Text Include="Varriables.txt">
+    <Text Include="save.txt">
       <Filter>Source Files</Filter>
     </Text>
     <Text Include="Anchents.txt">

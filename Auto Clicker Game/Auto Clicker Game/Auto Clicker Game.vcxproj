@@ -151,7 +151,7 @@
   </ItemGroup>
   <ItemGroup>
     <Text Include="Anchents.txt" />
-    <Text Include="Varriables.txt" />
+    <Text Include="save.txt" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
